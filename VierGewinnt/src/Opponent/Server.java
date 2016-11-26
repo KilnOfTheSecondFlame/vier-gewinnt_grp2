@@ -49,6 +49,15 @@ public class Server implements Runnable{
         
     }
     
+    @Override
+    public void run() {
+        try {
+            openConnection();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * Opens a socket on which the server listens for clients which want to join
      * @throws java.io.IOException
@@ -62,9 +71,9 @@ public class Server implements Runnable{
         new Thread(announceGame).start();
         
         try (Socket acceptedConnection = serverSocket.accept()){
+            System.out.println(acceptedConnection);
             notConnected = false;
             this.clientSocket = acceptedConnection;
-
         }
         catch (Exception ex){
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,14 +87,4 @@ public class Server implements Runnable{
     private void announceGame() throws IOException{
         
     }
-
-    @Override
-    public void run() {
-        try {
-            openConnection();
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
 }
