@@ -6,6 +6,7 @@
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
 * P. Baumann        25.11.2016  PB20161125_01   Created the class, implemented method stubs and added JavaDoc.                   
+* P. Baumann        26.11.2016  PB20161126_01   Started implemenation of searchGames()                  
 */
 
 
@@ -14,7 +15,6 @@ package Opponent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;

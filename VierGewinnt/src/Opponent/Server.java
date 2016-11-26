@@ -5,7 +5,9 @@
 *
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
-* Pascal Baumann    25.11.2016  PB20161125_01   Created the class, implemented method stubs and added JavaDoc.                   
+* P. Baumann       25.11.2016  PB20161125_01   Created the class, implemented method stubs and added JavaDoc.  
+* P. Baumann       26.11.2016  PB20161126_01   Implemented openConnection()
+* P. Baumann       26.11.2016  PB20161126_02   Started implementation of announceGame()
 */
 
 
@@ -107,6 +109,7 @@ public class Server implements Runnable{
         String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + " " + this.port;
         // TODO remove before shipping
         System.out.println("This is whats sent:" + dataPayload);
+        // We have to provide the multicast address FF02::1 (All Nodes link local) in byte sequence
         Inet6Address multicastGroup = (Inet6Address) Inet6Address.getByAddress(new byte[]{
             (byte) 0xFF, 0x02,
             0x00, 0x00,
