@@ -12,6 +12,9 @@
 package Opponent;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -24,23 +27,36 @@ import java.util.logging.Logger;
 public class Server implements Runnable{
     // Attributes
     private int port;
+    private int announcementPort;
     private boolean notConnected = true;
     private Socket clientSocket;
     
     // Constants
     private final int ANNOUNCE_WAIT = 5000;
     private final Runnable announceGame;
+    // Length of the Announcement messages
+    private final int DATALENGTH = 1024;
     
     /**
      * Default constructor
      */
     public Server(){
         this.port = 44444;
+        this.announcementPort = 44445;
         // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
         announceGame = () -> {
             try {
+                // Open the socket to be used for sending announcement messages
+                DatagramSocket announcerSocket = new DatagramSocket(this.announcementPort);
+                // While we haven't had a client connection, send messages continously
                 while (!notConnected){
-                    Server.this.announceGame();
+                    Server.this.announceGame(announcerSocket);
+                    
+                    try {
+                        Thread.sleep(ANNOUNCE_WAIT);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -68,6 +84,7 @@ public class Server implements Runnable{
         
         ServerSocket serverSocket = new ServerSocket(port);
         
+        
         new Thread(announceGame).start();
         
         try (Socket acceptedConnection = serverSocket.accept()){
@@ -81,10 +98,26 @@ public class Server implements Runnable{
     }
     
     /**
-     * Announces the server in the local subnet (/24) until a client connects
+     * Announces the server in the local subnet until a client connects
      * @throws java.io.IOException
      */
-    private void announceGame() throws IOException{
+    public void announceGame(final DatagramSocket announceSocket) throws IOException{
+        byte[] sendData = new byte[DATALENGTH];
+        
+        String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + " " + this.port;
+        // TODO remove before shipping
+        System.out.println("This is whats sent:" + dataPayload);
+        Inet6Address multicastGroup = (Inet6Address) Inet6Address.getByAddress(new byte[]{
+            (byte) 0xFF, 0x02,
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x00, 
+            0x00, 0x00, 
+            0x00, 0x00,
+            0x00, 0x00,
+            0x00, 0x01
+        });
+        System.out.println(multicastGroup);
         
     }
 }
