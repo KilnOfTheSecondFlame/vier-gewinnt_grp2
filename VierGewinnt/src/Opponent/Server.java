@@ -12,21 +12,41 @@
 package Opponent;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Pascal
  */
-public class Server {
+public class Server implements Runnable{
     // Attributes
     private int port;
+    private boolean notConnected = true;
+    private Socket clientSocket;
     
+    // Constants
+    private final int ANNOUNCE_WAIT = 5000;
+    private final Runnable announceGame;
     
     /**
      * Default constructor
      */
     public Server(){
         this.port = 44444;
+        // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
+        announceGame = () -> {
+            try {
+                while (!notConnected){
+                    Server.this.announceGame();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        };
+        
     }
     
     /**
@@ -34,15 +54,38 @@ public class Server {
      * @throws java.io.IOException
      */
     public void openConnection() throws IOException{
+        // TODO Remove console messages
+        System.out.println("Trying to open socket on port " + port);
         
+        ServerSocket serverSocket = new ServerSocket(port);
+        
+        new Thread(announceGame).start();
+        
+        try (Socket acceptedConnection = serverSocket.accept()){
+            notConnected = false;
+            this.clientSocket = acceptedConnection;
+
+        }
+        catch (Exception ex){
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
      * Announces the server in the local subnet (/24) until a client connects
      * @throws java.io.IOException
      */
-    public void announceGame() throws IOException{
+    private void announceGame() throws IOException{
         
+    }
+
+    @Override
+    public void run() {
+        try {
+            openConnection();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
