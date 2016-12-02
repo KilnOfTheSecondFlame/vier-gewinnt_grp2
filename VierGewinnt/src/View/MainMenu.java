@@ -10,10 +10,22 @@
 
 package View;
 
+import javax.swing.*;
+
 /**
- *
- * @author Melissa
+ * Shows the MainMenu: the user can choose a multiplayer game and enter his name.
+ * @author Philipp Renggli
  */
 public class MainMenu {
+    private JButton multiplayerButton;
+    private JLabel enterNameLabel;
+    private JTextField userName;
+    
+    /**
+    * Creates an instance of the MainMenu.
+    */
+    public MainMenu() {
+    
+    }
     
 }
