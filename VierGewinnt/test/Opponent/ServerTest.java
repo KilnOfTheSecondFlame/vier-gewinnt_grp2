@@ -6,7 +6,6 @@
 package Opponent;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.Inet6Address;
 import java.net.Socket;
 import org.junit.After;
@@ -14,7 +13,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -51,16 +49,5 @@ public class ServerTest {
         Server instance = new Server();
         new Thread(instance).start();
         Socket socket = new Socket(Inet6Address.getByName("::1"), 44444);
-    }
-
-    /**
-     * Test of announceGame method, of class Server.
-     */
-    @Test
-    public void testAnnounceGame() throws Exception {
-        System.out.println("announceGame");
-        DatagramSocket announceSocket = null;
-        Server instance = new Server();
-        instance.announceGame(announceSocket);
     }
 }

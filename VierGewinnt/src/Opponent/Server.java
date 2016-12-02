@@ -8,12 +8,14 @@
 * P. Baumann       25.11.2016  PB20161125_01   Created the class, implemented method stubs and added JavaDoc.  
 * P. Baumann       26.11.2016  PB20161126_01   Implemented openConnection()
 * P. Baumann       26.11.2016  PB20161126_02   Started implementation of announceGame()
+* P. Baumann       02.12.2016  PB20161202_01   Finished implementation of announceGame()
 */
 
 
 package Opponent;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -24,7 +26,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Pascal
+ * @author Pascal Baumann
  */
 public class Server implements Runnable{
     // Attributes
@@ -45,6 +47,7 @@ public class Server implements Runnable{
     public Server(){
         this.port = 44444;
         this.announcementPort = 44445;
+
         // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
         announceGame = () -> {
             try {
@@ -67,6 +70,9 @@ public class Server implements Runnable{
         
     }
     
+    /**
+     * Starts the client thread
+     */
     @Override
     public void run() {
         try {
@@ -86,7 +92,7 @@ public class Server implements Runnable{
         
         ServerSocket serverSocket = new ServerSocket(port);
         
-        
+        // Starts the Announcement Thread
         new Thread(announceGame).start();
         
         try (Socket acceptedConnection = serverSocket.accept()){
@@ -101,11 +107,15 @@ public class Server implements Runnable{
     
     /**
      * Announces the server in the local subnet until a client connects
+     * @param announceSocket DatagramSocket on which to listen for lobbies
      * @throws java.io.IOException
      */
-    public void announceGame(final DatagramSocket announceSocket) throws IOException{
+    private void announceGame(final DatagramSocket announceSocket) throws IOException{
         byte[] sendData = new byte[DATALENGTH];
         
+        /* TODO Review whats sent to the clients - also centralise this?
+                Because a change here makes it necessary to change the handling in Opponent.Client
+        */
         String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + " " + this.port;
         // TODO remove before shipping
         System.out.println("This is whats sent:" + dataPayload);
@@ -120,7 +130,12 @@ public class Server implements Runnable{
             0x00, 0x00,
             0x00, 0x01
         });
-        System.out.println(multicastGroup);
         
+        // Prepare data in Datagramm
+        sendData = dataPayload.getBytes();
+        // Create the actual packet
+        DatagramPacket sendPacket = new DatagramPacket(sendData, DATALENGTH, multicastGroup, announcementPort);
+        // Send the packet over UDP
+        announceSocket.send(sendPacket);
     }
 }

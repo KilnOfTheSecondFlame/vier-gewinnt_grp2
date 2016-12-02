@@ -21,12 +21,12 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Pascal
+ * @author Pascal Baumann
  */
 public class Client implements Runnable{
     
     // Stores server with their hostname and on which port they are listening
-    private HashMap<String, Integer> servers;
+    private final HashMap<String, Integer> servers;
     
     // Length of the Announcement messages
     private final int DATALENGTH = 1024;
