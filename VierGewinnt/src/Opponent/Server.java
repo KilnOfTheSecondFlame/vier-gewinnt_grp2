@@ -9,6 +9,7 @@
 * P. Baumann       26.11.2016  PB20161126_01   Implemented openConnection()
 * P. Baumann       26.11.2016  PB20161126_02   Started implementation of announceGame()
 * P. Baumann       02.12.2016  PB20161202_01   Finished implementation of announceGame()
+* P. Baumann       03.12.2016  PB20161203_01   Modified ports for announcement
 */
 
 
@@ -31,40 +32,42 @@ import java.util.logging.Logger;
 public class Server implements Runnable{
     // Attributes
     private int port;
-    private int announcementPort;
     private boolean notConnected = true;
     private Socket clientSocket;
     
     // Constants
     private final int ANNOUNCE_WAIT = 5000;
+    private final int ANNOUNCEMENT_SEND_PORT = 44445;
+    private final int ANNOUNCEMENT_RECEIVE_PORT = 44446;
+    
     private final Runnable announceGame;
-    // Length of the Announcement messages
-    private final int DATALENGTH = 1024;
     
     /**
      * Default constructor
      */
     public Server(){
         this.port = 44444;
-        this.announcementPort = 44445;
 
         // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
-        announceGame = () -> {
-            try {
-                // Open the socket to be used for sending announcement messages
-                DatagramSocket announcerSocket = new DatagramSocket(this.announcementPort);
-                // While we haven't had a client connection, send messages continously
-                while (!notConnected){
-                    Server.this.announceGame(announcerSocket);
-                    
-                    try {
+        announceGame = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Open the socket to be used for sending announcement messages
+                    DatagramSocket announcerSocket = new DatagramSocket(Server.this.ANNOUNCEMENT_SEND_PORT);
+                    // While we haven't had a client connection, send messages continously
+                    while (notConnected){
+                        Server.this.announceGame(announcerSocket);
+                        
+                        try {
                         Thread.sleep(ANNOUNCE_WAIT);
-                    } catch (InterruptedException ex) {
+                        } catch (InterruptedException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
+                }catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         };
         
@@ -93,7 +96,7 @@ public class Server implements Runnable{
         ServerSocket serverSocket = new ServerSocket(port);
         
         // Starts the Announcement Thread
-        new Thread(announceGame).start();
+        new Thread(this.announceGame).start();
         
         try (Socket acceptedConnection = serverSocket.accept()){
             System.out.println(acceptedConnection);
@@ -111,8 +114,7 @@ public class Server implements Runnable{
      * @throws java.io.IOException
      */
     private void announceGame(final DatagramSocket announceSocket) throws IOException{
-        byte[] sendData = new byte[DATALENGTH];
-        
+        byte[] sendData;        
         /* TODO Review whats sent to the clients - also centralise this?
                 Because a change here makes it necessary to change the handling in Opponent.Client
         */
@@ -134,8 +136,23 @@ public class Server implements Runnable{
         // Prepare data in Datagramm
         sendData = dataPayload.getBytes();
         // Create the actual packet
-        DatagramPacket sendPacket = new DatagramPacket(sendData, DATALENGTH, multicastGroup, announcementPort);
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, multicastGroup, ANNOUNCEMENT_RECEIVE_PORT);
+        // TODO remove before shipping - Debug
+        System.out.println("Announcing..");
         // Send the packet over UDP
         announceSocket.send(sendPacket);
+    }
+    
+    
+    // TODO remove before shipping
+    public static void main(String[] args) {
+        Client cInstance = new Client();
+        new Thread(cInstance).start();
+        
+        Server instance = new Server();
+        new Thread(instance).start();
+        while (true){
+            
+        }
     }
 }
