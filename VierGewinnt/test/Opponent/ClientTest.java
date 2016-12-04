@@ -5,7 +5,12 @@
  */
 package Opponent;
 
-import java.net.DatagramSocket;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,12 +47,22 @@ public class ClientTest {
      * Test of searchGames method, of class Client.
      */
     @Test
-    public void testSearchGames() {
+    public void testSearchGames() throws IOException {
         System.out.println("searchGames");
-        DatagramSocket gameListenerSocket = null;
+
+        MulticastSocket gameListenerSocket = new MulticastSocket(44446);
+        gameListenerSocket.joinGroup(InetAddress.getByName("FF02::FC"));
+
         Client instance = new Client();
+
+        Server Serverinstance = new Server();
+        new Thread(Serverinstance).start();
+
         instance.searchGames(gameListenerSocket);
-        assertEquals(instance.getServers().size(), 1);
+
+        HashMap<String, Integer> servers = instance.getServers();
+
+        assertEquals(servers.size(), 1);
     }
 
     /**
@@ -58,20 +73,18 @@ public class ClientTest {
         System.out.println("connect");
         Client instance = new Client();
         instance.connect();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of run method, of class Client.
+     * Test of getServers method, of class Client.
      */
     @Test
-    public void testRun() {
-        System.out.println("run");
+    public void testGetServers() {
+        System.out.println("getServers");
         Client instance = new Client();
-        instance.run();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        HashMap<String, Integer> expResult = new HashMap<>();
+        HashMap<String, Integer> result = instance.getServers();
+        assertEquals(expResult, result);
     }
     
 }

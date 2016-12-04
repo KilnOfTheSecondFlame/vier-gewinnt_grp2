@@ -18,7 +18,6 @@ package Opponent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -49,25 +48,22 @@ public class Server implements Runnable{
         this.port = 44444;
 
         // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
-        announceGame = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Open the socket to be used for sending announcement messages
-                    DatagramSocket announcerSocket = new DatagramSocket(Server.this.ANNOUNCEMENT_SEND_PORT);
-                    // While we haven't had a client connection, send messages continously
-                    while (notConnected){
-                        Server.this.announceGame(announcerSocket);
-                        
-                        try {
+        announceGame = () -> {
+            try {
+                // Open the socket to be used for sending announcement messages
+                DatagramSocket announcerSocket = new DatagramSocket(Server.this.ANNOUNCEMENT_SEND_PORT);
+                // While we haven't had a client connection, send messages continously
+                while (notConnected){
+                    Server.this.announceGame(announcerSocket);
+                    
+                    try {
                         Thread.sleep(ANNOUNCE_WAIT);
-                        } catch (InterruptedException ex) {
+                    } catch (InterruptedException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                        }
                     }
-                }catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         };
         
@@ -121,17 +117,8 @@ public class Server implements Runnable{
         String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + " " + this.port;
         // TODO remove before shipping
         System.out.println("This is whats sent:" + dataPayload);
-        // We have to provide the multicast address FF02::1 (All Nodes link local) in byte sequence
-        Inet6Address multicastGroup = (Inet6Address) Inet6Address.getByAddress(new byte[]{
-            (byte) 0xFF, 0x02,
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x00, 
-            0x00, 0x00, 
-            0x00, 0x00,
-            0x00, 0x00,
-            0x00, 0x01
-        });
+        // We have to provide the multicast address FF02::FC (All Nodes link local) in byte sequence
+        InetAddress multicastGroup = InetAddress.getByName("FF02::FC");
         
         // Prepare data in Datagramm
         sendData = dataPayload.getBytes();
@@ -141,18 +128,5 @@ public class Server implements Runnable{
         System.out.println("Announcing..");
         // Send the packet over UDP
         announceSocket.send(sendPacket);
-    }
-    
-    
-    // TODO remove before shipping
-    public static void main(String[] args) {
-        Client cInstance = new Client();
-        new Thread(cInstance).start();
-        
-        Server instance = new Server();
-        new Thread(instance).start();
-        while (true){
-            
-        }
     }
 }
