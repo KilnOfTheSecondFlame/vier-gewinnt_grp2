@@ -8,6 +8,7 @@ package Opponent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +46,7 @@ public class ClientTest {
 
     /**
      * Test of searchGames method, of class Client.
+     * @throws java.io.IOException
      */
     @Test
     public void testSearchGames() throws IOException {
@@ -72,7 +74,15 @@ public class ClientTest {
     public void testConnect() {
         System.out.println("connect");
         Client instance = new Client();
-        instance.connect();
+        Server serverInstance = new Server();
+        new Thread(serverInstance).start();
+        try {
+            instance.connect(InetAddress.getByName("::1"),44444);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

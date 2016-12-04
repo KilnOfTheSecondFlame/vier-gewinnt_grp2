@@ -13,10 +13,14 @@
 
 package Opponent;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +32,9 @@ import java.util.logging.Logger;
 public class Client implements Runnable{
     // Attributes
     private boolean isReceiving = true;
+    private Socket serverSocket;
+    private DataOutputStream outToServer;
+    private BufferedReader inFromServer ;
     
     //CONSTANTS
     // Stores server with their hostname and on which port they are listening
@@ -68,6 +75,7 @@ public class Client implements Runnable{
         Integer serverport;
         // We don't want our thread to hardcrash when IntParsing fails
         try{
+            // Apparently parseInt does not like wihtespace... Hence we use trim()
             serverport = Integer.parseInt(messageHandling[1].trim());
         } catch (java.lang.NumberFormatException ex){
             System.out.println(ex.getMessage());
@@ -82,9 +90,36 @@ public class Client implements Runnable{
     
     /** 
      * Connects to the specified server.
+     * @param serverAddress IPv6 address of server
+     * @param serverPort Port number of server
+     * @throws java.io.IOException If the client can't open a socket
      */
-    public void connect(){
+    public void connect(InetAddress serverAddress, int serverPort) throws IOException{
+        this.serverSocket = new Socket(serverAddress, serverPort);
+        // Thanks to https://systembash.com/a-simple-java-tcp-server-and-tcp-client/
+        this.outToServer = new DataOutputStream(this.serverSocket.getOutputStream());
+        this.inFromServer = new BufferedReader(new InputStreamReader(this.serverSocket.getInputStream()));
+    }
+    
+    /**
+     * Sends a move to the server (the column in which the token should be placed)
+     * @param column The column in which the token shall be placed as an int
+     * @throws IOException 
+     */
+    public boolean sendMove(int column) throws IOException{
+        this.outToServer.writeInt(column);
         
+        return false;
+    }
+    
+    /**
+     * Receives a move from the server
+     * @return The column in which the server wants to place a token as an integer
+     * @throws IOException 
+     */
+    public int receiveMove() throws IOException{
+        int receivedMove = this.inFromServer.read();
+        return receivedMove;
     }
 
     @Override
@@ -110,7 +145,7 @@ public class Client implements Runnable{
         }
     }
         
-    // TODO Remove before shipping
+    // TODO Remove before shipping - Test for ClientTest.testSearchGames() depends on it
     public HashMap<String, Integer> getServers() {
         return servers;
     }

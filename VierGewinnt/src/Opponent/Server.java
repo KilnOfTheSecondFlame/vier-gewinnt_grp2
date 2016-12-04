@@ -15,7 +15,10 @@
 
 package Opponent;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -33,6 +36,8 @@ public class Server implements Runnable{
     private int port;
     private boolean notConnected = true;
     private Socket clientSocket;
+    private BufferedReader inFromClient;
+    private DataOutputStream outToClient;
     
     // Constants
     private final int ANNOUNCE_WAIT = 5000;
@@ -96,10 +101,15 @@ public class Server implements Runnable{
         
         try (Socket acceptedConnection = serverSocket.accept()){
             System.out.println(acceptedConnection);
+            // Setting this disables the announcement messages
             notConnected = false;
             this.clientSocket = acceptedConnection;
+            // Thanks to https://systembash.com/a-simple-java-tcp-server-and-tcp-client/
+            inFromClient = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+            outToClient = new DataOutputStream(this.clientSocket.getOutputStream());
         }
         catch (Exception ex){
+            // TODO Maybe implement graceful handling of notaccepted Connections (idk how btw - PB)
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -124,9 +134,29 @@ public class Server implements Runnable{
         sendData = dataPayload.getBytes();
         // Create the actual packet
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, multicastGroup, ANNOUNCEMENT_RECEIVE_PORT);
-        // TODO remove before shipping - Debug
-        System.out.println("Announcing..");
         // Send the packet over UDP
         announceSocket.send(sendPacket);
+    }
+    
+    /**
+     * Sends a move to the client
+     * @param column The column in which the token shall be placed as an int
+     * @return true if the message was received
+     * @throws IOException 
+     */
+    public boolean sendMove(int column) throws IOException{
+        this.outToClient.writeInt(column);
+        
+        return false;
+    }
+    
+    /** 
+     * Receives a move from the client
+     * @return The column in which the client wants to place a token as an integer
+     * @throws java.io.IOException
+     */
+    public int receiveMove() throws IOException{
+        int receivedMove = this.inFromClient.read();
+        return receivedMove;
     }
 }
