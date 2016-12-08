@@ -43,6 +43,7 @@ public class Client implements Runnable{
     private final int DATALENGTH = 1024;
     // Port where announcement are received
     private final int ANNOUNCEMENT_RECEIVE_PORT = 44446;
+    private final String SEND_SUCCESSFUL_MESSAGE = "Successful";
     
     
     /**
@@ -99,17 +100,24 @@ public class Client implements Runnable{
         // Thanks to https://systembash.com/a-simple-java-tcp-server-and-tcp-client/
         this.outToServer = new DataOutputStream(this.serverSocket.getOutputStream());
         this.inFromServer = new BufferedReader(new InputStreamReader(this.serverSocket.getInputStream()));
+        // Stop searching for games
+        this.isReceiving = false;
     }
     
     /**
      * Sends a move to the server (the column in which the token should be placed)
      * @param column The column in which the token shall be placed as an int
+     * @return true if the message was received
      * @throws IOException 
      */
     public boolean sendMove(int column) throws IOException{
+        boolean result = false;
         this.outToServer.writeInt(column);
-        
-        return false;
+        this.outToServer.flush();
+        String receiveMessage = this.inFromServer.readLine();
+        System.out.println(receiveMessage);
+        if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
+        return result;
     }
     
     /**
@@ -118,10 +126,22 @@ public class Client implements Runnable{
      * @throws IOException 
      */
     public int receiveMove() throws IOException{
-        int receivedMove = this.inFromServer.read();
+        char[] receiveBuf = new char[4];
+        this.inFromServer.read(receiveBuf);
+        int receivedMove =  0;
+        for (int i = 0; i < 4; i++){
+            int shift = (3-i)*8;
+            receivedMove += ((byte) receiveBuf[i]) << shift;
+        }
+        this.outToServer.writeChars(SEND_SUCCESSFUL_MESSAGE + "\n");
+        this.outToServer.flush();
         return receivedMove;
     }
-
+    
+    /**
+     * Starts the Client to search for open Servers
+     * 
+     */
     @Override
     public void run() {
         try {
@@ -134,6 +154,7 @@ public class Client implements Runnable{
             }
             while (isReceiving){
                 searchGames(announcementSocket);
+                
                 // TODO remove before shipping
                 System.out.println("List of servers:");
                 servers.keySet().forEach((server) -> {
@@ -149,4 +170,5 @@ public class Client implements Runnable{
     public HashMap<String, Integer> getServers() {
         return servers;
     }
+    
 }

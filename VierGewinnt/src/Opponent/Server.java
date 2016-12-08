@@ -38,11 +38,12 @@ public class Server implements Runnable{
     private Socket clientSocket;
     private BufferedReader inFromClient;
     private DataOutputStream outToClient;
-    
+        
     // Constants
     private final int ANNOUNCE_WAIT = 5000;
     private final int ANNOUNCEMENT_SEND_PORT = 44445;
     private final int ANNOUNCEMENT_RECEIVE_PORT = 44446;
+    private final String SEND_SUCCESSFUL_MESSAGE = "Successful";
     
     private final Runnable announceGame;
     
@@ -81,6 +82,9 @@ public class Server implements Runnable{
     public void run() {
         try {
             openConnection();
+            
+            // TODO Remove - debug
+            System.out.println(sendMove(2));
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -98,20 +102,15 @@ public class Server implements Runnable{
         
         // Starts the Announcement Thread
         new Thread(this.announceGame).start();
-        
-        try (Socket acceptedConnection = serverSocket.accept()){
-            System.out.println(acceptedConnection);
-            // Setting this disables the announcement messages
-            notConnected = false;
-            this.clientSocket = acceptedConnection;
-            // Thanks to https://systembash.com/a-simple-java-tcp-server-and-tcp-client/
-            inFromClient = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
-            outToClient = new DataOutputStream(this.clientSocket.getOutputStream());
-        }
-        catch (Exception ex){
-            // TODO Maybe implement graceful handling of notaccepted Connections (idk how btw - PB)
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Socket acceptedConnection = serverSocket.accept();
+        System.out.println(acceptedConnection);
+        // Setting this disables the announcement messages
+        notConnected = false;
+        this.clientSocket = acceptedConnection;
+        // Thanks to https://systembash.com/a-simple-java-tcp-server-and-tcp-client/
+        inFromClient = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+        outToClient = new DataOutputStream(this.clientSocket.getOutputStream());
+    
     }
     
     /**
@@ -145,9 +144,13 @@ public class Server implements Runnable{
      * @throws IOException 
      */
     public boolean sendMove(int column) throws IOException{
+        boolean result = false;
         this.outToClient.writeInt(column);
-        
-        return false;
+        this.outToClient.flush();
+        String receiveMessage = this.inFromClient.readLine();
+        System.out.println(receiveMessage);
+        if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
+        return result;
     }
     
     /** 
@@ -156,7 +159,15 @@ public class Server implements Runnable{
      * @throws java.io.IOException
      */
     public int receiveMove() throws IOException{
-        int receivedMove = this.inFromClient.read();
+        char[] receiveBuf = new char[4];
+        this.inFromClient.read(receiveBuf);
+        int receivedMove =  0;
+        for (int i = 0; i < 4; i++){
+            int shift = (3-i)*8;
+            receivedMove += ((byte) receiveBuf[i]) << shift;
+        }
+        this.outToClient.writeChars(SEND_SUCCESSFUL_MESSAGE + "\n");
+        this.outToClient.flush();
         return receivedMove;
     }
 }

@@ -7,9 +7,14 @@ package Opponent;
 
 import java.io.IOException;
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,16 +43,27 @@ public class ServerTest {
     @After
     public void tearDown() {
     }
-
+    
     /**
-     * Test of run method, of class Server.
-     * @throws java.io.IOException
+     * Tests sendMove method, of class Server.
      */
     @Test
-    public void testRun() throws IOException {
-        System.out.println("run");
-        Server instance = new Server();
-        new Thread(instance).start();
-        Socket socket = new Socket(Inet6Address.getByName("::1"), 44444);
+    public void testSendMove(){
+        System.out.println("sendMove");
+        Server instServer = new Server();
+        Client instClient = new Client();
+        new Thread(instServer).start();
+        new Thread(instClient).start();
+        int move = 0;
+        try {
+            instClient.connect(InetAddress.getByName("::1"), 44444);
+            move = instClient.receiveMove();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(ServerTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ServerTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Assert.assertEquals(2,move);
     }
+    
 }
