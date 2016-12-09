@@ -115,7 +115,6 @@ public class Client implements Runnable{
         this.outToServer.writeInt(column);
         this.outToServer.flush();
         String receiveMessage = this.inFromServer.readLine();
-        System.out.println(receiveMessage);
         if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
         return result;
     }

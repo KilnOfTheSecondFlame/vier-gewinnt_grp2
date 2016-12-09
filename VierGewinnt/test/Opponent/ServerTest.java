@@ -6,9 +6,7 @@
 package Opponent;
 
 import java.io.IOException;
-import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +43,7 @@ public class ServerTest {
     }
     
     /**
-     * Tests sendMove method, of class Server.
+     * Test of sendMove method, of class Server.
      */
     @Test
     public void testSendMove(){

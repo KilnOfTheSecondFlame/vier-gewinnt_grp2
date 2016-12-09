@@ -103,7 +103,6 @@ public class Server implements Runnable{
         // Starts the Announcement Thread
         new Thread(this.announceGame).start();
         Socket acceptedConnection = serverSocket.accept();
-        System.out.println(acceptedConnection);
         // Setting this disables the announcement messages
         notConnected = false;
         this.clientSocket = acceptedConnection;
@@ -148,7 +147,6 @@ public class Server implements Runnable{
         this.outToClient.writeInt(column);
         this.outToClient.flush();
         String receiveMessage = this.inFromClient.readLine();
-        System.out.println(receiveMessage);
         if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
         return result;
     }

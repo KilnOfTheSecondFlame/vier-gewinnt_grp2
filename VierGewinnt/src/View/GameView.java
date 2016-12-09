@@ -33,7 +33,9 @@ public class GameView {
     /**
     * Creates an instance of the GameView.
     */
-    public GameView() {
+    public GameView(final int sxSize, final int sySize) {
+        xsize = sxSize;
+        ysize = sySize;
         JFrame frame = new JFrame("Vier gewinnt");        
         Container contentPane = frame.getContentPane();
         JPanel gameGrid = new JPanel();
