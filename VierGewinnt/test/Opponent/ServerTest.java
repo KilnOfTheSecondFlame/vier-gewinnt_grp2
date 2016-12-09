@@ -48,7 +48,7 @@ public class ServerTest {
     @Test
     public void testSendMove(){
         System.out.println("sendMove");
-        Server instServer = new Server();
+        Server instServer = new Server("Test");
         Client instClient = new Client();
         new Thread(instServer).start();
         new Thread(instClient).start();

@@ -62,9 +62,7 @@ public class Client implements Runnable{
         DatagramPacket receivedPacket = new DatagramPacket(receiveData, receiveData.length);
         
         try {
-            System.out.println("Opponent.Client.searchGames() - Receiving...");
             gameListenerSocket.receive(receivedPacket);
-            System.out.println("UDP datagram received");
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -165,9 +163,15 @@ public class Client implements Runnable{
         }
     }
         
-    // TODO Remove before shipping - Test for ClientTest.testSearchGames() depends on it
+    
     public HashMap<String, Integer> getServers() {
         return servers;
     }
-    
+ 
+    /**
+     * Stops the client from searching open games
+     */
+    public void stopClient(){
+        this.isReceiving = false;
+    }
 }

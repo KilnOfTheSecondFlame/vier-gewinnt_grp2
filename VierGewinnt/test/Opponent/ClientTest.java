@@ -57,7 +57,7 @@ public class ClientTest {
 
         Client instance = new Client();
 
-        Server Serverinstance = new Server();
+        Server Serverinstance = new Server("Test");
         new Thread(Serverinstance).start();
 
         instance.searchGames(gameListenerSocket);
@@ -74,7 +74,7 @@ public class ClientTest {
     public void testConnect() {
         System.out.println("connect");
         Client instance = new Client();
-        Server serverInstance = new Server();
+        Server serverInstance = new Server("Test");
         new Thread(serverInstance).start();
         try {
             instance.connect(InetAddress.getByName("::1"),44444);

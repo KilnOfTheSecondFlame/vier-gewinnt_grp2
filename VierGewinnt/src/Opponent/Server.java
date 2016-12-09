@@ -38,6 +38,7 @@ public class Server implements Runnable{
     private Socket clientSocket;
     private BufferedReader inFromClient;
     private DataOutputStream outToClient;
+    private String playerName;
         
     // Constants
     private final int ANNOUNCE_WAIT = 5000;
@@ -48,9 +49,11 @@ public class Server implements Runnable{
     private final Runnable announceGame;
     
     /**
-     * Default constructor
+     * Constructor for class
+     * @param playerName
      */
-    public Server(){
+    public Server(final String playerName){
+        this.playerName = playerName;
         this.port = 44444;
 
         // Inner class, so we can have a thread listening for connection attempts, and one announcing the server
@@ -122,7 +125,7 @@ public class Server implements Runnable{
         /* TODO Review whats sent to the clients - also centralise this?
                 Because a change here makes it necessary to change the handling in Opponent.Client
         */
-        String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + " " + this.port;
+        String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + "/" + this.playerName + " " + this.port;
         // TODO remove before shipping
         System.out.println("This is whats sent:" + dataPayload);
         // We have to provide the multicast address FF02::FC (All Nodes link local) in byte sequence
@@ -167,5 +170,13 @@ public class Server implements Runnable{
         this.outToClient.writeChars(SEND_SUCCESSFUL_MESSAGE + "\n");
         this.outToClient.flush();
         return receivedMove;
+    }
+    
+    /**
+     * Stops the server from announcing it's presence
+     */
+    public void stopServer(){
+        this.notConnected = false;
+        Thread.currentThread().interrupt();
     }
 }
