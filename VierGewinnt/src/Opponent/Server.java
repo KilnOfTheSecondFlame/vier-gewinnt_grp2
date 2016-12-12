@@ -10,6 +10,7 @@
 * P. Baumann       26.11.2016  PB20161126_02   Started implementation of announceGame()
 * P. Baumann       02.12.2016  PB20161202_01   Finished implementation of announceGame()
 * P. Baumann       03.12.2016  PB20161203_01   Modified ports for announcement
+* R. Scheller      10.12.2016  RS20161210_01   Added method to check if someone has connected to the server.
 */
 
 
@@ -35,6 +36,7 @@ public class Server implements Runnable{
     // Attributes
     private int port;
     private boolean notConnected = true;
+    private boolean isConnected = false;    // Since notConnected is used in stopServer(), we can't use it to test if someone has connected. Signature: RS20161210_01
     private Socket clientSocket;
     private BufferedReader inFromClient;
     private DataOutputStream outToClient;
@@ -113,6 +115,8 @@ public class Server implements Runnable{
         inFromClient = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
         outToClient = new DataOutputStream(this.clientSocket.getOutputStream());
     
+        // Indicate that a connection is established. Signature: RS20161210_01
+        isConnected = true;
     }
     
     /**
@@ -178,5 +182,14 @@ public class Server implements Runnable{
     public void stopServer(){
         this.notConnected = false;
         Thread.currentThread().interrupt();
+    }
+    
+    // Signature: RS20161210_01
+    /** 
+     * Checks if someone has connected to this server.
+     * @return true if a connection has been established, false otherwise.
+     */
+    public boolean isConnected(){
+        return isConnected;
     }
 }
