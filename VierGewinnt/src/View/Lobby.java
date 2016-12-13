@@ -6,7 +6,8 @@
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
 * M. Beck       02.12.2016  MB20161202_01   Created the class    
-* M. Beck       08.12.2016  MB20161206_01   Implemented the GUI without functionality      
+* M. Beck       08.12.2016  MB20161206_01   Implemented the GUI without functionality   
+* R. Scheller   09.12.2016  RS20161209_01   Added few changes.
 */
 
 package View;
@@ -19,10 +20,10 @@ import java.util.ArrayList;
  * Shows the Lobby: the user can choose the game.
  * @author Melissa Beck
  */
-public class Lobby {
+public class Lobby extends JFrame {             // Extended from JFrame. Signatur: RS20161209_01
     private JList<String> gameList;
     private JButton exitButton;
-    private ArrayList gameListArray; 
+    private ArrayList<String> gameListArray;    // Included Generics. Signatur: RS20161209_01
     
     /**
     * Creates an instance of the Lobby.
@@ -48,6 +49,14 @@ public class Lobby {
         frame.add(buttonPane, BorderLayout.PAGE_END);
         frame.setSize(200, 200);
         frame.setVisible(true);
+    }
+    
+    public ArrayList<String> getGameListArray(){
+        return gameListArray;
+    }
+    
+    public JList<String> getGameList(){
+        return gameList;
     }
     
 //    public static void main(String [ ] args) {
