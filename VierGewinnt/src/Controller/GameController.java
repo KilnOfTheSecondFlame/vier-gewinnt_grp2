@@ -18,11 +18,9 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JButton;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 import javax.swing.JTable;
 
@@ -149,7 +147,10 @@ public class GameController implements ActionListener{
         // TODO Remove before shipping!
         System.out.println("ActionPerformed: " + e.toString());
         // Action Handling for MainMenu
-        if (e.getClass().equals(MainMenu.class)){
+        
+        System.out.println(mainMenu.ownsButton(new JButton()));
+        
+        if (mainMenu.ownsButton((JButton)e.getSource())){
             if (e.getActionCommand().equals("multiplayer")){
                 System.out.println("Multiplayerbutton clicked");
                 mainMenu.setVisible(false);

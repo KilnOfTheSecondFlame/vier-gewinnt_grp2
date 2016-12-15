@@ -13,13 +13,14 @@ package View;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 import javax.swing.*;
 
 /**
  * Shows the MainMenu: the user can choose a multiplayer game and enter his name.
  * @author Melissa Beck
  */
-public class MainMenu {
+public class MainMenu implements buttonFinder{
     private JLabel enterNameLabel;
     private JTextField userName;
     private JButton multiplayerButton;
@@ -52,4 +53,10 @@ public class MainMenu {
     public void setVisible(final boolean modVis){
         mainMenuFrame.setVisible(modVis);
     }
+
+    @Override
+    public boolean ownsButton(final JButton button) {
+        return button.equals(multiplayerButton);
+    }
+    
 }
