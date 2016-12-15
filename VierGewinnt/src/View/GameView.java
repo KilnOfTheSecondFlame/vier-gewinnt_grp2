@@ -57,7 +57,7 @@ public class GameView implements ButtonFinder{
             buttons.add(new JButton("" + (i + 1)));
             gameGrid.add(buttons.get(i));
             buttons.get(i).addActionListener(listener);
-            buttons.get(i).setActionCommand("Gam");
+            buttons.get(i).setActionCommand("button "+ i);
         }
 
         // adding the fields
@@ -99,15 +99,6 @@ public class GameView implements ButtonFinder{
         gameFrame.setVisible(true);
     }
     
-//    public void actionPerformed(ActionEvent e) {
-//        Object o = e.getSource();
-//        int index = 0;
-//        if (buttons.contains(o)) {
-//            index = buttons.indexOf(o);
-//        }
-//        setToken(index, 7, Color.RED);
-//        // GameController.updateGameboard(index, 7, Color.RED);
-//    }
 
     /**
      * Set the Token in the Gamboard.
@@ -135,7 +126,7 @@ public class GameView implements ButtonFinder{
 
     @Override
     public boolean ownsButton(JButton button) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return buttons.contains(button);
     }
     
     public void setVisible(final boolean modVis){
