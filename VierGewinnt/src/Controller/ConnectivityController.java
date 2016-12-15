@@ -91,7 +91,7 @@ public class ConnectivityController {
         String[] nameAndPort = strings[2].split(" ");
         
         if(client != null){
-            client.connect(InetAddress.getByName(strings[0]), Integer.valueOf(nameAndPort[1]));   
+            client.connect(InetAddress.getByName(strings[1].split("%")[0]), Integer.valueOf(nameAndPort[1]));   
             
             // We connected to someone thus we are the client.
             client.stopClient();        // Stop the client thread. Signature: RS20161215_01
