@@ -6,6 +6,7 @@
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
 * R. Scheller       09.12.2016  RS20161209_01   Created the class and implemented its methods. 
+* R. Scheller       15.12.2016  RS20161215_01   Added some changes.
 */
 
 package Controller;
@@ -90,9 +91,10 @@ public class ConnectivityController {
         String[] nameAndPort = strings[2].split(" ");
         
         if(client != null){
-            client.connect(InetAddress.getByName(strings[1]), Integer.valueOf(nameAndPort[1]));   
+            client.connect(InetAddress.getByName(strings[0]), Integer.valueOf(nameAndPort[1]));   
             
             // We connected to someone thus we are the client.
+            client.stopClient();        // Stop the client thread. Signature: RS20161215_01
             server = null;
         }
     }
