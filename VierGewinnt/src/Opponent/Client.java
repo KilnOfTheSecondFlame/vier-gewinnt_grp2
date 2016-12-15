@@ -9,6 +9,7 @@
 * P. Baumann        26.11.2016  PB20161126_01   Started implemenation of searchGames()   
 * P. Baumann        03.12.2016  PB20161203_01   Finished implementation of searchGames()
 * R. Scheller       15.12.2016  RS20161215_01   Server from the own computer is no longer added to the servers list.
+* R. Scheller       15.12.2016  RS20161215_02   Clear the servers list once in a while so that old servers aren't listed anymore.
 */
 
 
@@ -39,6 +40,7 @@ public class Client implements Runnable{
     private DataOutputStream outToServer;
     private BufferedReader inFromServer ;
     private String ownServer;                   // Signature: RS20161215_01
+    private long lastPurge;                     // Signature: RS20161215_02
     
     //CONSTANTS
     // Stores server with their hostname and on which port they are listening
@@ -62,6 +64,8 @@ public class Client implements Runnable{
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        lastPurge = System.currentTimeMillis(); // Signature: RS20161215_02
     }
     
     /**
@@ -93,6 +97,12 @@ public class Client implements Runnable{
             else serverport = 0;
         }
 //        System.out.println("Server: " + server + " & Serverport: " + serverport);
+
+        // Clear the servers list after a certain time. Signature: RS20161215_02
+        if(lastPurge + 15000 < System.currentTimeMillis()){
+            servers.clear();
+            lastPurge = System.currentTimeMillis();
+        }
         
         // Only add the server to the list if it's not the server from the same computer. Signature: RS20161215_01
         if(!ownServer.equalsIgnoreCase(server.split("/")[0] + "/" + server.split("/")[1])){
