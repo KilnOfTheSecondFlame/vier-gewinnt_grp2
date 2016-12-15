@@ -20,6 +20,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
@@ -55,37 +57,7 @@ public class GameController implements ActionListener{
         mainMenu = new MainMenu(this);
         gameView = new GameView(this);
         lobby = new Lobby();
-        
-        lobby.setVisible(false);
         gameView.setVisible(false);
-        
-        /*
-        lobby.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                if(e.getComponent().getName().equals("gameList") && e.getClickCount() >= 2){
-                    JList list = (JList) e.getSource();
-                    int index = list.locationToIndex(e.getPoint());
-                    
-                    // TODO - Process clicked entry and establish the game
-                }
-                else if(e.getComponent().getName().equals("exitButton")){
-                    mainMenu.setVisible(true);
-                    mainMenu.setVisible(false);
-                }
-            }
-        });
-        
-        gameView.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                if(clickAllowed && e.getComponent().getName().equals("gameGrid")){
-                    clickAllowed = false;
-                    processMoves(e);
-                }
-            }
-        });
-        */
         
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -117,6 +89,15 @@ public class GameController implements ActionListener{
                 // Create the connectivityController
                 connectivityController = new ConnectivityController(lobby, name);
                 
+                boolean isConnected = false;
+                while (!isConnected){
+                    try {
+                        //isConnected = connectivityController.getConnected;
+                        this.wait(500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
         
