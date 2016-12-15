@@ -7,6 +7,7 @@
 * ------------------------------------------------------------------------------------------------------------------
 * R. Scheller       25.11.2016  RS20161125_01   Created the class, implemented its methods and added JavaDoc.   
 * R. Scheller       15.12.2016  RS20161215_01   Added getLastToken().
+* R. Scheller       15.12.2016  RS20161215_02   Added isGameBoardFull().
 */
 
 package Model;
@@ -278,5 +279,19 @@ public class GameBoard {
      */
     public LastTokenHelper getLastToken(){
         return lastToken;
+    }
+    
+    /** Signature: RS20161215_02
+     * Checks if the {@code GameBoard} is full.
+     * @return true if no Token can be placed anymore, false otherwise.
+     */
+    public boolean isGameBoardFull(){
+        for(int i=0; i < CONSTWIDTH; i++){
+            if(!isColumnFull(i)){
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

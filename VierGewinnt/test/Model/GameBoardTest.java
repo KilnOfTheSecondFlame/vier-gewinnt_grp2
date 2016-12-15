@@ -4,7 +4,8 @@
 *
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
-* R. Scheller       25.11.2016  RS20161125_01   Created the class and the test cases for the gameboard.     
+* R. Scheller       25.11.2016  RS20161125_01   Created the class and the test cases for the gameboard.   
+* R. Scheller       15.12.2016  RS20161215_01   Added new testing methods.
  */
 package Model;
 
@@ -196,4 +197,110 @@ public class GameBoardTest {
         boolean result = instance.isGameWon();
         assertEquals(expResult, result);
     }
+    
+    
+    // START Added new methods. Signature: RS20161215_01
+    /**
+     * Test of getLastToken method, of class GameBoard.
+     */
+    @Test
+    public void testLastTokenColor() {
+        GameBoard instance = new GameBoard(5, 5);
+        Color expResult = Color.BLACK;
+        instance.addToken(1, new Token(Color.BLACK));
+        instance.addToken(2, new Token(Color.RED));
+        instance.addToken(2, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.RED));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.RED));
+        instance.addToken(4, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.BLACK));
+
+        Color result = instance.getLastToken().token.getColor();
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of getLastToken method, of class GameBoard.
+     */
+    @Test
+    public void testLastTokenColumn() {
+        GameBoard instance = new GameBoard(5, 5);
+        int expResult = 4;
+        instance.addToken(1, new Token(Color.BLACK));
+        instance.addToken(2, new Token(Color.RED));
+        instance.addToken(2, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.RED));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.RED));
+        instance.addToken(4, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.BLACK));
+
+        int result = instance.getLastToken().column;
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of getLastToken method, of class GameBoard.
+     */
+    @Test
+    public void testLastTokenRow() {
+        GameBoard instance = new GameBoard(5, 5);
+        int expResult = 2;
+        instance.addToken(1, new Token(Color.BLACK));
+        instance.addToken(2, new Token(Color.RED));
+        instance.addToken(2, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.RED));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.RED));
+        instance.addToken(4, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.BLACK));
+
+        int result = instance.getLastToken().row;
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of isGameBoardFull method, of class GameBoard.
+     */
+    @Test
+    public void testIsGameBoardFullFalse() {
+        GameBoard instance = new GameBoard(5, 5);
+        boolean expResult = false;
+        instance.addToken(1, new Token(Color.BLACK));
+        instance.addToken(2, new Token(Color.RED));
+        instance.addToken(2, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.RED));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(3, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.RED));
+        instance.addToken(4, new Token(Color.BLACK));
+        instance.addToken(4, new Token(Color.BLACK));
+
+        boolean result = instance.isGameBoardFull();
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of isGameBoardFull method, of class GameBoard.
+     */
+    @Test
+    public void testIsGameBoardFullTrue() {
+        GameBoard instance = new GameBoard(3, 2);
+        boolean expResult = true;
+        instance.addToken(0, new Token(Color.BLACK));
+        instance.addToken(0, new Token(Color.RED));
+        instance.addToken(1, new Token(Color.BLACK));
+        instance.addToken(1, new Token(Color.RED));
+        instance.addToken(2, new Token(Color.BLACK));
+        instance.addToken(2, new Token(Color.BLACK));
+
+        boolean result = instance.isGameBoardFull();
+        assertEquals(expResult, result);
+    }
+    // END Added new methods. Signature: RS20161215_01
 }
