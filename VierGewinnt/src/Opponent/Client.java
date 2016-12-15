@@ -8,6 +8,8 @@
 * P. Baumann        25.11.2016  PB20161125_01   Created the class, implemented method stubs and added JavaDoc.                   
 * P. Baumann        26.11.2016  PB20161126_01   Started implemenation of searchGames()   
 * P. Baumann        03.12.2016  PB20161203_01   Finished implementation of searchGames()
+* R. Scheller       15.12.2016  RS20161215_01   Server from the own computer is no longer added to the servers list.
+* R. Scheller       15.12.2016  RS20161215_02   Clear the servers list once in a while so that old servers aren't listed anymore.
 */
 
 
@@ -21,6 +23,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -36,6 +39,8 @@ public class Client implements Runnable{
     private Socket serverSocket;
     private DataOutputStream outToServer;
     private BufferedReader inFromServer ;
+    private String ownServer;                   // Signature: RS20161215_01
+    private long lastPurge;                     // Signature: RS20161215_02
     
     //CONSTANTS
     // Stores server with their hostname and on which port they are listening
@@ -52,6 +57,15 @@ public class Client implements Runnable{
      */
     public Client(){
         this.servers = new HashMap<>();
+        
+        // Determine the own Server. Signature: RS20161215_01
+        try {
+            this.ownServer = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        lastPurge = System.currentTimeMillis(); // Signature: RS20161215_02
     }
     
     /**
@@ -78,13 +92,23 @@ public class Client implements Runnable{
             // Apparently parseInt does not like wihtespace... Hence we use trim()
             serverport = Integer.parseInt(messageHandling[1].trim());
         } catch (java.lang.NumberFormatException ex){
-            System.out.println(ex.getMessage());
+//            System.out.println(ex.getMessage());
             if (messageHandling[1].trim().equals("44444")) serverport = 44444;
             else serverport = 0;
         }
-        System.out.println("Server: " + server + " & Serverport: " + serverport);
-        synchronized(servers){
-            servers.putIfAbsent(server, serverport);
+//        System.out.println("Server: " + server + " & Serverport: " + serverport);
+
+        // Clear the servers list after a certain time. Signature: RS20161215_02
+        if(lastPurge + 15000 < System.currentTimeMillis()){
+            servers.clear();
+            lastPurge = System.currentTimeMillis();
+        }
+        
+        // Only add the server to the list if it's not the server from the same computer. Signature: RS20161215_01
+        if(!ownServer.equalsIgnoreCase(server.split("/")[0] + "/" + server.split("/")[1])){
+            synchronized(servers){
+                servers.putIfAbsent(server, serverport);
+            }
         }
     }
     
@@ -144,7 +168,7 @@ public class Client implements Runnable{
     @Override
     public void run() {
         try {
-            System.out.println("Open UDP Socket on " + ANNOUNCEMENT_RECEIVE_PORT);
+//            System.out.println("Open UDP Socket on " + ANNOUNCEMENT_RECEIVE_PORT);
             MulticastSocket announcementSocket = new MulticastSocket(ANNOUNCEMENT_RECEIVE_PORT);
             try {
                 announcementSocket.joinGroup(InetAddress.getByName("FF02::FC"));
@@ -155,9 +179,9 @@ public class Client implements Runnable{
                 searchGames(announcementSocket);
                 
                 // TODO remove before shipping
-                System.out.println("List of servers:");
+//               System.out.println("List of servers:");
                 servers.keySet().forEach((server) -> {
-                    System.out.println(server + " " + servers.get(server));
+//                    System.out.println(server + " " + servers.get(server));
                 });
             }
         } catch (IOException ex) {
