@@ -82,8 +82,8 @@ public class GameBoardTest {
         int column = 0;
         Token token = new Token(Color.BLACK);
         GameBoard instance = new GameBoard(5, 5);
-        boolean expResult = true;
-        boolean result = instance.addToken(column, token);
+        int expResult = 9;
+        int result = instance.addToken(column, token);
         assertEquals(expResult, result);
     }
 

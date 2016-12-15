@@ -32,19 +32,18 @@ public class GameView implements ButtonFinder{
     private int xsize = 7;
     private int ysize = 8;
     private ArrayList<JButton> buttons;
-    private GameBoard gameBoard;
     private CustomLabel[][] fields;
     private JFrame gameFrame;
     
     /**
      * Creates an instance of the GameView.
      * @param listener
+     * @param boardWidth
+     * @param boardHeight
      */
-    public GameView(final ActionListener listener) {
-        // public GameView(final GameBoard gameBoard) {
-        // this.gameBoard = gameBoard;
-        // xsize = gameBoard.getWidth();
-        // ysize = gameBoard.getHeight();
+    public GameView(final ActionListener listener, final int boardWidth, final int boardHeight) {
+        xsize = boardWidth;
+        ysize = boardHeight;
         gameFrame = new JFrame("Vier gewinnt");
         Container contentPane = gameFrame.getContentPane();
         JPanel gameGrid = new JPanel();
@@ -57,12 +56,12 @@ public class GameView implements ButtonFinder{
             buttons.add(new JButton("" + (i + 1)));
             gameGrid.add(buttons.get(i));
             buttons.get(i).addActionListener(listener);
-            buttons.get(i).setActionCommand("button "+ i);
+            buttons.get(i).setActionCommand("button"+ i);
         }
 
         // adding the fields
-        for (int column = 0; column < ysize; column++) {
-            for (int row = 0; row < xsize; row++) {
+        for (int row = 0; row < xsize; row++) {
+            for (int column = 0; column < ysize; column++) {
                 fields[row][column] = new CustomLabel(Color.lightGray);
                 fields[row][column].setHorizontalAlignment(SwingConstants.CENTER);
                 fields[row][column].setOpaque(true);
@@ -108,16 +107,7 @@ public class GameView implements ButtonFinder{
      * @param color The specific color from the player to update
      */
     public void setToken(int row, int column, Color color) {
-        fields[row][column].updateColor(color);
-    }
-
-    /**
-     * Get the buttons of the GameBoard.
-     *
-     * @return an ArrayList with the JButtons in it.
-     */
-    public ArrayList<JButton> getButtons() {
-        return buttons;
+        fields[row][column-1].updateColor(color);
     }
     
     public JFrame getGameFrame(){

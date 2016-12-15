@@ -63,8 +63,8 @@ public class GameBoard {
      * @param token The {@code Token} to be added to the gameboard.
      * @return true if the {@code token} has been added, false otherwise.
      */
-    public boolean addToken(int column, Token token){
-        if(isColumnFull(column) || token == null) return false;
+    public int addToken(int column, Token token){
+        if(isColumnFull(column) || token == null) return -1;
         
         int row;
         
@@ -79,7 +79,7 @@ public class GameBoard {
         lastToken = new LastTokenHelper(token, column, row);        // Signature: RS20161215_01
         gameIsWon = checkIfWon(column, row, token.getColor());
         
-        return true;
+        return row;
     }
     
     /**

@@ -19,13 +19,12 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
-import javax.swing.JTable;
 
 /**
  *
@@ -38,7 +37,7 @@ public class GameController implements ActionListener{
     
     private Color currentColor = COLORS[0];
     private Player currentPlayer;
-    private boolean clickAllowed;
+    private boolean ourMove = true;
     
     private MainMenu mainMenu;
     private Lobby lobby;
@@ -55,9 +54,10 @@ public class GameController implements ActionListener{
     // Constructor
     public GameController(){
         mainMenu = new MainMenu(this);
-        gameView = new GameView(this);
+        gameBoard = new GameBoard(GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
+        gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         lobby = new Lobby();
-        gameView.setVisible(false);
+        //gameView.setVisible(false);
         
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -88,11 +88,12 @@ public class GameController implements ActionListener{
                 
                 // Create the connectivityController
                 connectivityController = new ConnectivityController(lobby, name);
+                connectivityController.searchAndAnnounce();
                 
                 boolean isConnected = false;
                 while (!isConnected){
                     try {
-                        //isConnected = connectivityController.getConnected;
+                        //isConnected = connectivityController.getConnected();
                         this.wait(500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,6 +102,7 @@ public class GameController implements ActionListener{
             }
         }
         
+        /*
         if (lobby.ownsButton(sourceButton)){
             if (e.getActionCommand().equals("exit")){
                 
@@ -113,21 +115,30 @@ public class GameController implements ActionListener{
                 connectivityController = null;
             }
         }
+        */
         
         if (gameView.ownsButton(sourceButton)){
-            // TODO Implement what to do when button is pressed on Column
-            
+            String actionCommand = e.getActionCommand();
+            if (actionCommand.matches("button[0-9]+")){
+                int column = Integer.parseInt(actionCommand.substring(6)) + 1;
+                if (ourMove){
+                    System.out.println("Make a move in " + column);
+                    processMoves(column);
+                }
+            }
         }
     }
      
     // TASKS TO DO WHILE RUNNING
-    private void processMoves(MouseEvent e){
-        JTable table = (JTable) e.getSource();
-        int column = table.columnAtPoint(e.getPoint());
-
-        gameBoard.addToken(column, new Token(currentColor));
+    private void processMoves(final int column){
+        int row = gameBoard.addToken(column, new Token(currentColor));
+        gameView.setToken(row, column, currentColor);
         
-        // TODO - Send move to opponent.
+        try {
+            connectivityController.sendMove(column);
+        } catch (IOException ex) {
+            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         if(currentColor == COLORS[0]){
             currentColor = COLORS[1];
@@ -151,13 +162,16 @@ public class GameController implements ActionListener{
         new Thread(new Runnable(){
             @Override
             public void run(){
-                boolean waitingOnOpponent = true;
-
-                while(waitingOnOpponent){
-                // TODO - Wait for opponents move and process it.
+                // Set ourMove to false to stop accepting new column input
+                ourMove = !ourMove;
+                try {
+                    int move = connectivityController.receiveMove();
+                    processMoves(column);
+                    // Free the buttonHandling of gameView again
+                    ourMove = !ourMove;
+                } catch (IOException ex) {
+                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-                clickAllowed = true;
             }
         }).start();
     }
