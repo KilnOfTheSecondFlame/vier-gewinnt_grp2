@@ -47,7 +47,7 @@ public class GameController implements ActionListener{
     public GameController(){
         mainMenu = new MainMenu(this);
         lobby = new Lobby();
-        gameView = new GameView();
+        // gameView = new GameView();
              
         /*
         mainMenu.addMouseListener(new MouseAdapter(){
