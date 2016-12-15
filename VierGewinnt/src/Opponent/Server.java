@@ -25,6 +25,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,8 +131,6 @@ public class Server implements Runnable{
                 Because a change here makes it necessary to change the handling in Opponent.Client
         */
         String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + "/" + this.playerName + " " + this.port;
-        // TODO remove before shipping
-        System.out.println("This is whats sent:" + dataPayload);
         // We have to provide the multicast address FF02::FC (All Nodes link local) in byte sequence
         InetAddress multicastGroup = InetAddress.getByName("FF02::FC");
         
@@ -151,7 +150,8 @@ public class Server implements Runnable{
      */
     public boolean sendMove(int column) throws IOException{
         boolean result = false;
-        this.outToClient.writeInt(column);
+        byte[] sendBuf = ByteBuffer.allocate(4).putInt(column).array();
+        this.outToClient.write(sendBuf);
         this.outToClient.flush();
         String receiveMessage = this.inFromClient.readLine();
         if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
