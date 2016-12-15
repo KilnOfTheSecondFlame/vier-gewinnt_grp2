@@ -9,11 +9,11 @@
  * M. Beck       06.12.2016  MB20161206_01   Implemented the GUI without functionality
  * M. Beck       08.12.2016  MB20161208_01   Implemented the GUI without functionality
  * M. Beck       11.12.2016  MB20161211_01   Implemented the setting of a token
+ * M. Beck       15.12.2016  MB20161215_01   Changed the northpanel and tried out event listeners
  */
 package View;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import Model.GameBoard;
 import Controller.GameController;
@@ -102,15 +102,15 @@ public class GameView {
         gameFrame.setVisible(true);
     }
     
-    public void actionPerformed(ActionEvent e) {
-        Object o = e.getSource();
-        int index = 0;
-        if (buttons.contains(o)) {
-            index = buttons.indexOf(o);
-        }
-        setToken(index, 7, Color.RED);
-        // GameController.updateGameboard(index, 7, Color.RED);
-    }
+//    public void actionPerformed(ActionEvent e) {
+//        Object o = e.getSource();
+//        int index = 0;
+//        if (buttons.contains(o)) {
+//            index = buttons.indexOf(o);
+//        }
+//        setToken(index, 7, Color.RED);
+//        // GameController.updateGameboard(index, 7, Color.RED);
+//    }
 
     /**
      * Set the Token in the Gamboard.
