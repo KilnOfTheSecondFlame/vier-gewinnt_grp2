@@ -35,13 +35,10 @@ public class GameView implements ButtonFinder{
     private GameBoard gameBoard;
     private CustomLabel[][] fields;
     private JFrame gameFrame;
-
-    public static void main(String[] args) {
-        // GameView gameView = new GameView();
-    }
     
     /**
      * Creates an instance of the GameView.
+     * @param listener
      */
     public GameView(final ActionListener listener) {
         // public GameView(final GameBoard gameBoard) {
@@ -139,5 +136,9 @@ public class GameView implements ButtonFinder{
     @Override
     public boolean ownsButton(JButton button) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void setVisible(final boolean modVis){
+        gameFrame.setVisible(modVis);
     }
 }

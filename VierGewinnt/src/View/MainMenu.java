@@ -60,4 +60,7 @@ public class MainMenu implements ButtonFinder{
         return button.equals(multiplayerButton);
     }
     
+    public String getName(){    // Signatur: PB20161215_01
+        return userName.getText();
+    }
 }

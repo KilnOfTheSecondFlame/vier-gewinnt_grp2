@@ -46,7 +46,11 @@ public class GameController implements ActionListener{
     
     public GameController(){
         mainMenu = new MainMenu(this);
+        gameView = new GameView(this);
         lobby = new Lobby();
+        
+        lobby.setVisible(false);
+        gameView.setVisible(false);
         // gameView = new GameView();
              
         /*
@@ -147,8 +151,20 @@ public class GameController implements ActionListener{
         if (mainMenu.ownsButton((JButton)e.getSource())){
             if (e.getActionCommand().equals("multiplayer")){
                 System.out.println("Multiplayerbutton clicked");
+                
+                // Hide the MainMenu
                 mainMenu.setVisible(false);
                 lobby.setVisible(true);
+                
+                // Set the playerName
+                String name = mainMenu.getName();
+                if (name.equals("")){
+                    name = "Player" + Math.floor(Math.random());
+                }
+                
+                // Create the connectivityController
+                connectivityController = new ConnectivityController(lobby, name);
+                
             }
         }
         

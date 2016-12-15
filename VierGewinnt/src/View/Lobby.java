@@ -24,12 +24,13 @@ public class Lobby extends JFrame implements ButtonFinder{             // Extend
     private JList<String> gameList;
     private JButton exitButton;
     private ArrayList<String> gameListArray;    // Included Generics. Signatur: RS20161209_01
+    private JFrame lobbyFrame;
     
     /**
     * Creates an instance of the Lobby.
     */
     public Lobby() {
-        JFrame frame = new JFrame();
+        lobbyFrame = new JFrame();
                
         gameListArray = new ArrayList<>();
         gameListArray.add("Pascal Baumann");
@@ -45,10 +46,10 @@ public class Lobby extends JFrame implements ButtonFinder{             // Extend
         JPanel buttonPane = new JPanel();
         buttonPane.add(exitButton);
  
-        frame.add(listScrollPane, BorderLayout.CENTER);
-        frame.add(buttonPane, BorderLayout.PAGE_END);
-        frame.setSize(200, 200);
-        frame.setVisible(true);
+        lobbyFrame.add(listScrollPane, BorderLayout.CENTER);
+        lobbyFrame.add(buttonPane, BorderLayout.PAGE_END);
+        lobbyFrame.setSize(200, 200);
+        lobbyFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
     
     public ArrayList<String> getGameListArray(){
@@ -59,13 +60,14 @@ public class Lobby extends JFrame implements ButtonFinder{             // Extend
         return gameList;
     }
     
-//    public static void main(String [ ] args) {
-//        Lobby lobby = new Lobby();
-//    }
+    @Override
+    public void setVisible(final boolean modVis){
+        lobbyFrame.setVisible(modVis);
+    }
 
     @Override
     public boolean ownsButton(JButton button) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
 }
