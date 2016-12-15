@@ -16,8 +16,11 @@ import View.Lobby;
 import View.MainMenu;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.PLAIN_MESSAGE;
@@ -27,7 +30,7 @@ import javax.swing.JTable;
  *
  * @author Rico Scheller
  */
-public class GameController {
+public class GameController implements ActionListener{
     private final int GAMEBOARDWIDTH = 10;
     private final int GAMEBOARDHEIGHT = 10;
     private final Color[] COLORS = {Color.RED, Color.BLACK};
@@ -44,10 +47,11 @@ public class GameController {
     private ConnectivityController connectivityController;
     
     public GameController(){
-        mainMenu = new MainMenu();
+        mainMenu = new MainMenu(this);
         lobby = new Lobby();
         gameView = new GameView();
-                
+             
+        /*
         mainMenu.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
@@ -83,6 +87,7 @@ public class GameController {
                 }
             }
         });
+        */
         
         EventQueue.invokeLater(new Runnable(){
             @Override
@@ -91,6 +96,8 @@ public class GameController {
             }
         });
     }
+    
+    
     
     private void processMoves(MouseEvent e){
         JTable table = (JTable) e.getSource();
@@ -116,7 +123,7 @@ public class GameController {
         
         if(gameBoard.isGameWon()){
             // TODO - Option for a rematch
-            JOptionPane.showMessageDialog(gameView, "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
         }
         
         new Thread(new Runnable(){
@@ -135,5 +142,19 @@ public class GameController {
     
     public static void main(String[] args) {
         GameController gameController = new GameController();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Remove before shipping!
+        System.out.println("ActionPerformed: " + e.toString());
+        // Action Handling for MainMenu
+        if (e.getClass().equals(MainMenu.class)){
+            if (e.getActionCommand().equals("multiplayer")){
+                System.out.println("Multiplayerbutton clicked");
+                mainMenu.setVisible(false);
+                lobby.setVisible(true);
+            }
+        }
     }
 }

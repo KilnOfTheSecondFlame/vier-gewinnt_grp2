@@ -12,6 +12,7 @@
 package View;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 
 /**
@@ -22,30 +23,33 @@ public class MainMenu {
     private JLabel enterNameLabel;
     private JTextField userName;
     private JButton multiplayerButton;
+    private JFrame mainMenuFrame;
 
     /**
     * Creates an instance of the MainMenu.
     */
-    public MainMenu() {
-        JFrame frame = new JFrame();
-        Container contentPane = frame.getContentPane();
+    public MainMenu(final ActionListener listener) {
+        mainMenuFrame = new JFrame();
+        Container contentPane = mainMenuFrame.getContentPane();
         
         enterNameLabel = new JLabel("Enter your name here");
         userName = new JTextField(20);
         multiplayerButton = new JButton("Multiplayer");
+        
+        multiplayerButton.addActionListener(listener);
+        multiplayerButton.setActionCommand("multiplayer");
 
         contentPane.setLayout(new GridLayout(0,1,0,10));
         contentPane.add(enterNameLabel);
         contentPane.add(userName);
         contentPane.add(multiplayerButton);
         
-        frame.setResizable(false);
-        frame.setSize(200, 120);
-        frame.setVisible(true);
+        mainMenuFrame.setResizable(false);
+        mainMenuFrame.setSize(200, 120);
+        mainMenuFrame.setVisible(true);
     }
     
-//    public static void main(String [ ] args) {
-//        MainMenu mainMenu = new MainMenu();
-//    }
-    
+    public void setVisible(final boolean modVis){
+        mainMenuFrame.setVisible(modVis);
+    }
 }

@@ -32,6 +32,7 @@ public class GameView {
     private JButton[] buttons;
     private GameBoard gameBoard;
     private CustomLabel[][] fields;
+    private JFrame gameFrame;
     
     /**
     * Creates an instance of the GameView.
@@ -41,8 +42,8 @@ public class GameView {
         // this.gameBoard = gameBoard;
         // xsize = gameBoard.getWidth();
         // ysize = gameBoard.getHeight();
-        JFrame frame = new JFrame("Vier gewinnt");
-        Container contentPane = frame.getContentPane();
+        gameFrame = new JFrame("Vier gewinnt");
+        Container contentPane = gameFrame.getContentPane();
         JPanel gameGrid = new JPanel();
         fields = new CustomLabel[xsize][ysize];
         buttons = new JButton[xsize];
@@ -72,8 +73,8 @@ public class GameView {
         contentPane.add(scoreTable, BorderLayout.PAGE_END);
         gameGrid.setLayout(new GridLayout(ysize + 1, xsize + 1));
         
-        frame.setSize(500, 600);
-        frame.setVisible(true);
+        gameFrame.setSize(500, 600);
+        gameFrame.setVisible(true);
     }
     
      /**
@@ -94,7 +95,7 @@ public class GameView {
         return buttons;
     }
     
-//    public static void main(String [ ] args) {
-//        GameView gameView = new GameView();
-//    }
+    public JFrame getGameFrame(){
+        return this.gameFrame;
+    }
 }
