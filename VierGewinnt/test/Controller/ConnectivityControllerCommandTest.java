@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Class created by Pascal Baumann. Hochschule Luzern - Informatik. Copyright 2016
  */
 package Controller;
 
@@ -73,9 +71,8 @@ public class ConnectivityControllerCommandTest {
             cc.sendMove(index);
         } else if(next.equalsIgnoreCase("receive")){
             int index = cc.receiveMove();
+            System.out.println("Received Move: " + index);
         }
-        
-        return;
     }
     
     public static void main(String[] args) throws IOException {
