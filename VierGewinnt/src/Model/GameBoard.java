@@ -5,7 +5,8 @@
 *
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
-* R. Scheller       25.11.2016  RS20161125_01   Created the class, implemented its methods and added JavaDoc.                   
+* R. Scheller       25.11.2016  RS20161125_01   Created the class, implemented its methods and added JavaDoc.   
+* R. Scheller       15.12.2016  RS20161215_01   Added getLastToken().
 */
 
 package Model;
@@ -24,6 +25,7 @@ public class GameBoard {
                                         //              ..
                                         //              CONSTHEIGHT-1
     private boolean gameIsWon;
+    private LastTokenHelper lastToken;  // Signature: RS20161215_01
     private final int CONSTWIDTH;
     private final int CONSTHEIGHT;
     
@@ -73,6 +75,7 @@ public class GameBoard {
             }
         }
         
+        lastToken = new LastTokenHelper(token, column, row);        // Signature: RS20161215_01
         gameIsWon = checkIfWon(column, row, token.getColor());
         
         return true;
@@ -267,5 +270,13 @@ public class GameBoard {
      */
     public Token[][] getBoard(){
         return grid.clone();
+    }
+    
+    /** Signature: RS20161215_01
+     * Gets the last added {@code Token} and its position.
+     * @return The last added Token and its position.
+     */
+    public LastTokenHelper getLastToken(){
+        return lastToken;
     }
 }
