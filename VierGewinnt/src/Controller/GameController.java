@@ -6,6 +6,7 @@
 * Who               When        Signature       What
 * ------------------------------------------------------------------------------------------------------------------
 * R. Scheller       01.12.2016  RS20161201_01   Created the class and implemented its methods.  
+* P. Baumann        15.12.2016  PB20161215_01   Changed the MouseListeners to ActionListeners; Implemented the handling of the ActionEvents
 */
 
 package Controller;
@@ -44,6 +45,12 @@ public class GameController implements ActionListener{
     private GameBoard gameBoard;
     private ConnectivityController connectivityController;
     
+    // START THE GAME
+    public static void main(String[] args) {
+        GameController gameController = new GameController();
+    }
+    
+    // Constructor
     public GameController(){
         mainMenu = new MainMenu(this);
         gameView = new GameView(this);
@@ -51,19 +58,8 @@ public class GameController implements ActionListener{
         
         lobby.setVisible(false);
         gameView.setVisible(false);
-        // gameView = new GameView();
-             
-        /*
-        mainMenu.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                if(e.getComponent().getName().equals("multiplayerButton")){
-                   lobby.setVisible(true);
-                   mainMenu.setVisible(false);
-                }
-            }
-        });
         
+        /*
         lobby.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
@@ -99,8 +95,51 @@ public class GameController implements ActionListener{
         });
     }
     
-    
-    
+    // ACTION LISTENER
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton sourceButton = (JButton)e.getSource();
+        if (mainMenu.ownsButton(sourceButton)){
+            if (e.getActionCommand().equals("multiplayer")){
+                
+                // Hide the MainMenu
+                mainMenu.setVisible(false);
+                
+                // Show the lobby
+                lobby.setVisible(true);
+                
+                // Set the playerName
+                String name = mainMenu.getName();
+                if (name.equals("")){
+                    name = "Player" + (int)Math.floor(Math.random()*100000);
+                }
+                
+                // Create the connectivityController
+                connectivityController = new ConnectivityController(lobby, name);
+                
+            }
+        }
+        
+        if (lobby.ownsButton(sourceButton)){
+            if (e.getActionCommand().equals("exit")){
+                
+                // Hide lobby
+                lobby.setVisible(false);
+                // Show MainMenu
+                mainMenu.setVisible(true);
+                
+                // Delete the reference to the connectivityController
+                connectivityController = null;
+            }
+        }
+        
+        if (gameView.ownsButton(sourceButton)){
+            // TODO Implement what to do when button is pressed on Column
+            
+        }
+    }
+     
+    // TASKS TO DO WHILE RUNNING
     private void processMoves(MouseEvent e){
         JTable table = (JTable) e.getSource();
         int column = table.columnAtPoint(e.getPoint());
@@ -140,34 +179,5 @@ public class GameController implements ActionListener{
                 clickAllowed = true;
             }
         }).start();
-    }
-    
-    public static void main(String[] args) {
-        GameController gameController = new GameController();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (mainMenu.ownsButton((JButton)e.getSource())){
-            if (e.getActionCommand().equals("multiplayer")){
-                System.out.println("Multiplayerbutton clicked");
-                
-                // Hide the MainMenu
-                mainMenu.setVisible(false);
-                lobby.setVisible(true);
-                
-                // Set the playerName
-                String name = mainMenu.getName();
-                if (name.equals("")){
-                    name = "Player" + Math.floor(Math.random());
-                }
-                
-                // Create the connectivityController
-                connectivityController = new ConnectivityController(lobby, name);
-                
-            }
-        }
-        
-        
     }
 }

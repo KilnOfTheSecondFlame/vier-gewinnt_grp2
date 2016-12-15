@@ -28,6 +28,7 @@ public class MainMenu implements ButtonFinder{
 
     /**
     * Creates an instance of the MainMenu.
+     * @param listener
     */
     public MainMenu(final ActionListener listener) {
         mainMenuFrame = new JFrame();
