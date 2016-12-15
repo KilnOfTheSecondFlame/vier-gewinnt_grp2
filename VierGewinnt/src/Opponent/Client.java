@@ -21,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,7 +111,8 @@ public class Client implements Runnable{
      */
     public boolean sendMove(int column) throws IOException{
         boolean result = false;
-        this.outToServer.writeInt(column);
+        byte[] sendBuf = ByteBuffer.allocate(4).putInt(column).array();
+        this.outToServer.write(sendBuf);
         this.outToServer.flush();
         String receiveMessage = this.inFromServer.readLine();
         if (receiveMessage.equals(SEND_SUCCESSFUL_MESSAGE)) result = true;
