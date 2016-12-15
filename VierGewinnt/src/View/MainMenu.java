@@ -20,7 +20,7 @@ import javax.swing.*;
  * Shows the MainMenu: the user can choose a multiplayer game and enter his name.
  * @author Melissa Beck
  */
-public class MainMenu implements buttonFinder{
+public class MainMenu implements ButtonFinder{
     private JLabel enterNameLabel;
     private JTextField userName;
     private JButton multiplayerButton;
@@ -45,6 +45,7 @@ public class MainMenu implements buttonFinder{
         contentPane.add(userName);
         contentPane.add(multiplayerButton);
         
+        mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainMenuFrame.setResizable(false);
         mainMenuFrame.setSize(200, 120);
         mainMenuFrame.setVisible(true);

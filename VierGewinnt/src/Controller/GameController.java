@@ -144,12 +144,6 @@ public class GameController implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Remove before shipping!
-        System.out.println("ActionPerformed: " + e.toString());
-        // Action Handling for MainMenu
-        
-        System.out.println(mainMenu.ownsButton(new JButton()));
-        
         if (mainMenu.ownsButton((JButton)e.getSource())){
             if (e.getActionCommand().equals("multiplayer")){
                 System.out.println("Multiplayerbutton clicked");
@@ -157,5 +151,7 @@ public class GameController implements ActionListener{
                 lobby.setVisible(true);
             }
         }
+        
+        
     }
 }

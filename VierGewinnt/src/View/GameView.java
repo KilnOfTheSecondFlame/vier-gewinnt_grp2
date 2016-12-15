@@ -21,7 +21,7 @@ import Model.GameBoard;
  * Shows the GameView, depicts the current state of the game and shows the playername and its score.
  * @author Melissa Beck
  */
-public class GameView {    
+public class GameView implements ButtonFinder{    
     // todo: get the data of the following
     private String currentPlayer;
     private String opponent;
@@ -97,5 +97,10 @@ public class GameView {
     
     public JFrame getGameFrame(){
         return this.gameFrame;
+    }
+
+    @Override
+    public boolean ownsButton(JButton button) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

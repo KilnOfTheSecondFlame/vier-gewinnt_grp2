@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Shows the Lobby: the user can choose the game.
  * @author Melissa Beck
  */
-public class Lobby extends JFrame {             // Extended from JFrame. Signatur: RS20161209_01
+public class Lobby extends JFrame implements ButtonFinder{             // Extended from JFrame. Signatur: RS20161209_01
     private JList<String> gameList;
     private JButton exitButton;
     private ArrayList<String> gameListArray;    // Included Generics. Signatur: RS20161209_01
@@ -62,5 +62,10 @@ public class Lobby extends JFrame {             // Extended from JFrame. Signatu
 //    public static void main(String [ ] args) {
 //        Lobby lobby = new Lobby();
 //    }
+
+    @Override
+    public boolean ownsButton(JButton button) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
