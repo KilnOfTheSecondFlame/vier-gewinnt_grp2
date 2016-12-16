@@ -131,48 +131,52 @@ public class GameController implements ActionListener{
      
     // TASKS TO DO WHILE RUNNING
     private void processMoves(final int column){
-        int row = gameBoard.addToken(column, new Token(currentColor));
-        gameView.updateGameBoard(row, column, currentColor);
-        
-        try {
-            connectivityController.sendMove(column);
-        } catch (IOException ex) {
-            Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        if(currentColor == COLORS[0]){
-            currentColor = COLORS[1];
-        }
-        else{
-            currentColor = COLORS[0];
-        }
-
-        if(currentPlayer == self){
-            currentPlayer = opponent;
-        }
-        else{
-            currentPlayer = self;
-        }
-        
-        if(gameBoard.isGameWon()){
-            // TODO - Option for a rematch
-            JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
-        }
-        
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                // Set ourMove to false to stop accepting new column input
-                ourMove = !ourMove;
-                try {
-                    int move = connectivityController.receiveMove();
-                    processMoves(column);
-                    // Free the buttonHandling of gameView again
-                    ourMove = !ourMove;
-                } catch (IOException ex) {
-                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        int row = gameBoard.addToken(column-1, new Token(currentColor));
+        if (row>=0){
+            gameView.updateGameBoard(row, column, currentColor);
+            try {
+                connectivityController.sendMove(column);
+            } catch (IOException ex) {
+                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }).start();
+
+            if(currentColor == COLORS[0]){
+                currentColor = COLORS[1];
+            }
+            else{
+                currentColor = COLORS[0];
+            }
+
+            if(currentPlayer == self){
+                currentPlayer = opponent;
+            }
+            else{
+                currentPlayer = self;
+            }
+
+            if(gameBoard.isGameWon()){
+                // TODO - Option for a rematch
+                JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
+            }
+
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    // Set ourMove to false to stop accepting new column input
+                    ourMove = !ourMove;
+                    try {
+                        int move = connectivityController.receiveMove();
+                        processMoves(column);
+                        // Free the buttonHandling of gameView again
+                        ourMove = !ourMove;
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }).start();
+        }
+        else {
+            JOptionPane.showMessageDialog(gameView.getGameFrame(), "Column is full!\n Please choose another column", "Illegal!", PLAIN_MESSAGE);
+        }
     }
 }
