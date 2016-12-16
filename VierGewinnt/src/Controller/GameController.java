@@ -132,7 +132,7 @@ public class GameController implements ActionListener{
     // TASKS TO DO WHILE RUNNING
     private void processMoves(final int column){
         int row = gameBoard.addToken(column, new Token(currentColor));
-        gameView.setToken(row, column, currentColor);
+        gameView.updateGameBoard(row, column, currentColor);
         
         try {
             connectivityController.sendMove(column);

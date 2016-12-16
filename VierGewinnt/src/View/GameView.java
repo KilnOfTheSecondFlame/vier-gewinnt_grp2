@@ -10,12 +10,12 @@
  * M. Beck       08.12.2016  MB20161208_01   Implemented the GUI without functionality
  * M. Beck       11.12.2016  MB20161211_01   Implemented the setting of a token
  * M. Beck       15.12.2016  MB20161215_01   Changed the northpanel and tried out event listeners
+ * M. Beck       15.12.2016  MB20161215_02   Implemented method updateGameBoard and the exit button
  */
 package View;
 
 import java.awt.*;
 import javax.swing.*;
-import Model.GameBoard;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -24,20 +24,21 @@ import java.util.ArrayList;
  * @author Melissa Beck
  */
 public class GameView implements ButtonFinder{    
-    // todo: get the data of the following
-    private String currentPlayer;
-    private String opponent;
-    // private int currentPlayerScore;
-    // private int opponentScore;
-    private int xsize = 7;
-    private int ysize = 8;
+    private String serverName;
+    private String clientName;
+    // private int serverScore;
+    // private int clientScore;
+    private int xsize;
+    private int ysize;
     private ArrayList<JButton> buttons;
     private CustomLabel[][] fields;
     private JFrame gameFrame;
+    private JLabel serverLabel;
+    private JLabel clientLabel;
     
     /**
      * Creates an instance of the GameView.
-     * @param listener
+     * @param listener for listening of the events
      * @param boardWidth
      * @param boardHeight
      */
@@ -60,7 +61,7 @@ public class GameView implements ButtonFinder{
         }
 
         // adding the fields
-        for (int row = 0; row < xsize; row++) {
+        for (int row = 0; row < xsize; row++) { 
             for (int column = 0; column < ysize; column++) {
                 fields[row][column] = new CustomLabel(Color.lightGray);
                 fields[row][column].setHorizontalAlignment(SwingConstants.CENTER);
@@ -69,45 +70,54 @@ public class GameView implements ButtonFinder{
                 gameGrid.add(fields[row][column]);
             }
         }
-
+        
         JLabel lineLabel = new JLabel(" – ");
-        // JLabel scoreTable = new JLabel("Score: " + currentPlayer + " " + currentPlayerScore + " – " + opponent + " " + opponentScore);
+        // JLabel scoreTable = new JLabel("Score: " + serverName + " " + serverScore + " – " + clientName + " " + clientScore);
 
-        JLabel currentPlayerLabel = new JLabel("" + currentPlayer);    
-        currentPlayerLabel.setOpaque(true);
-        currentPlayerLabel.setBackground(new Color(255, 0, 0, 40));
-        // todo: only set border if it's my turn
-        currentPlayerLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.red));
+        serverLabel = new JLabel("" + serverName);    
+        serverLabel.setOpaque(true);
+        serverLabel.setBackground(new Color(255, 0, 0, 40));
+        serverLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.red));
 
-        JLabel opponentLabel = new JLabel("" + opponent);
-        opponentLabel.setOpaque(true);
-        opponentLabel.setBackground(new Color(255, 255, 0, 40));
-        // todo: only set border if it's your turn
-        opponentLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.yellow));
+        clientLabel = new JLabel("" + clientName);
+        clientLabel.setOpaque(true);
+        clientLabel.setBackground(new Color(255, 255, 0, 40));
+        
+        JButton exitButton = new JButton("exit");
+        JPanel exitPane = new JPanel();
+        exitPane.add(exitButton);
+        exitButton.addActionListener(listener);
+        exitButton.setActionCommand("exitbutton");
 
-        northPanel.add(currentPlayerLabel);
+        northPanel.add(serverLabel);
         northPanel.add(lineLabel);
-        northPanel.add(opponentLabel);
+        northPanel.add(clientLabel);
 
         contentPane.add(northPanel, BorderLayout.NORTH);
         contentPane.add(gameGrid, BorderLayout.CENTER);
+        contentPane.add(exitPane, BorderLayout.SOUTH);
         // contentPane.add(scoreTable, BorderLayout.SOUTH);
         gameGrid.setLayout(new GridLayout(ysize + 1, xsize + 1));
         
-        gameFrame.setSize(500, 600);
+        gameFrame.setSize(600, 700);
         gameFrame.setVisible(true);
     }
     
-
-    /**
-     * Set the Token in the Gamboard.
-     *
-     * @param row The specific row to update
-     * @param column The specific column to update
-     * @param color The specific color from the player to update
+     /**
+     * Updates the Gamboard with the token and the marking for the current player.
+     * @param row the row of the placed token
+     * @param column the column of the placed token
+     * @param color the color of the placed token (only use Color.RED or Color.YELLOW)
      */
-    public void setToken(int row, int column, Color color) {
+    public void updateGameBoard(int row, int column, Color color) {
         fields[row][column-1].updateColor(color);
+        if(color == Color.YELLOW || color == Color.yellow) {
+            serverLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.red));
+            clientLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.yellow));
+        } else if (color == Color.RED || color == Color.red) {
+            clientLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.yellow));
+            serverLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.red));
+        }
     }
     
     public JFrame getGameFrame(){

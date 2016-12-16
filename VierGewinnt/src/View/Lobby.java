@@ -33,11 +33,8 @@ public class Lobby extends JFrame implements ButtonFinder{             // Extend
         lobbyFrame = new JFrame();
                
         gameListArray = new ArrayList<>();
-        gameListArray.add("Pascal Baumann");
-        gameListArray.add("Rico Schneller");
-        gameListArray.add("Melissa Beck");
-        gameListArray.add("Max Mustermann");
-        gameListArray.add("Melanie Musterfrau");
+        setGameListArray();
+        
         gameList = new JList(gameListArray.toArray());
         gameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane listScrollPane = new JScrollPane(gameList);
@@ -50,6 +47,14 @@ public class Lobby extends JFrame implements ButtonFinder{             // Extend
         lobbyFrame.add(buttonPane, BorderLayout.PAGE_END);
         lobbyFrame.setSize(200, 200);
         lobbyFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+    
+    public void setGameListArray() {
+        gameListArray.add("Pascal Baumann");
+        gameListArray.add("Rico Schneller");
+        gameListArray.add("Melissa Beck");
+        gameListArray.add("Max Mustermann");
+        gameListArray.add("Melanie Musterfrau");
     }
     
     public ArrayList<String> getGameListArray(){
