@@ -7,6 +7,7 @@
 * ------------------------------------------------------------------------------------------------------------------
 * R. Scheller       09.12.2016  RS20161209_01   Created the class and implemented its methods. 
 * R. Scheller       15.12.2016  RS20161215_01   Added some changes.
+* R. Scheller       16.12.2016  RS20161216_01   Added interactivity with the lobby.
 */
 
 package Controller;
@@ -14,11 +15,14 @@ package Controller;
 import Opponent.Client;
 import Opponent.Server;
 import View.Lobby;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Map.Entry;
+import javax.swing.JList;
 
 /**
  * Represents the controller which handles the connections between the players.
@@ -27,10 +31,13 @@ import java.util.Map.Entry;
 public class ConnectivityController {
     private Client client;
     private Server server;
-    private Lobby lobby;
-    private Thread serverThread;
-    private Thread clientThread;
+    private final Lobby lobby;
+    private final Thread serverThread;
+    private final Thread clientThread;
     private Thread waitForConnect;
+    private boolean connected;          // Signature: RS20161216_01
+    private String opponentName;        // Signature: RS20161216_01
+    private final MouseAdapter mouseAdapter;  // Signature: RS20161216_01
     
     /**
      * Creates an instance of the ConntectivityController.
@@ -43,6 +50,27 @@ public class ConnectivityController {
         server = new Server(playerName);
         clientThread = new Thread(client);
         serverThread = new Thread(server);
+        connected = false;     // Signature: RS20161216_01
+        
+        mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(e.getClickCount() == 2){
+                    JList list = (JList) e.getSource();
+                    String selectedConnection = (String)list.getSelectedValue();
+                    
+                    if(selectedConnection != null && !selectedConnection.isEmpty()){
+                        try {
+                            connectTo(selectedConnection);
+                        } catch (IOException ex) {
+                            Logger.getLogger(ConnectivityController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        };
+        
+        lobby.registerMouseAdapter(mouseAdapter); // Signature: RS20161216_01
     }
     
     /**
@@ -75,6 +103,8 @@ public class ConnectivityController {
                 if(server != null){
                    // Someone connected to us thus we are the server.
                     client = null; 
+//                    opponentName = server.getOpponentName();
+                    connected = true;
                 }
             }
         });
@@ -96,6 +126,9 @@ public class ConnectivityController {
             // We connected to someone thus we are the client.
             client.stopClient();        // Stop the client thread. Signature: RS20161215_01
             server = null;
+            
+            opponentName = nameAndPort[0];
+            connected = true;
         }
     }
     
@@ -129,5 +162,21 @@ public class ConnectivityController {
         }
         
         return -1;
+    }
+    
+    /** Signature: RS20161216_01
+     * Checks if there is a connection to another computer.
+     * @return true if moves can be sent and received, false otherwise.
+     */
+    public boolean isConnected(){
+        return connected;
+    }
+    
+    /**
+     * Return the name of the connected player.
+     * @return the opponent name.
+     */
+    public String getOpponentName(){
+        return opponentName;
     }
 }
