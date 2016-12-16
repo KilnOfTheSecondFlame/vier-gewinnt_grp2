@@ -1,9 +1,17 @@
 /*
- * Class created by Pascal Baumann. Hochschule Luzern - Informatik. Copyright 2016
+* Class created by Rico Scheller. Hochschule Luzern - Informatik. Copyright 2016
+*
+* Change log:
+*
+* Who               When        Signature       What
+* ------------------------------------------------------------------------------------------------------------------
+* R. Scheller       11.12.2016  RS20161211_01   Created the class and implemented its methods. 
  */
 package Controller;
 
 import View.Lobby;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,7 +32,12 @@ public class ConnectivityControllerCommandTest {
         System.out.println("Please choose a player name:");
         String playerName = in.readLine();
         
-        lobby = new Lobby();
+        lobby = new Lobby(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
         cc = new ConnectivityController(lobby, playerName);
         cc.searchAndAnnounce();
         
