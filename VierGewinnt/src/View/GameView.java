@@ -10,8 +10,8 @@
  * M. Beck       08.12.2016  MB20161208_01   Implemented the GUI without functionality
  * M. Beck       11.12.2016  MB20161211_01   Implemented the setting of a token
  * M. Beck       15.12.2016  MB20161215_01   Changed the northpanel and tried out event listeners
- * M. Beck       15.12.2016  MB20161215_02   Implemented method updateGameBoard and the exit button
- */
+ * M. Beck       16.12.2016  MB20161216_01   few changes
+*/
 package View;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
- * Shows the GameView, depicts the current state of the game and shows the playername and its score.
+ * Shows the GameView, depicts the current state of the game and shows the playername.
  * @author Melissa Beck
  */
 public class GameView implements ButtonFinder{    
@@ -28,23 +28,23 @@ public class GameView implements ButtonFinder{
     private String clientName;
     // private int serverScore;
     // private int clientScore;
-    private int xsize;
-    private int ysize;
     private ArrayList<JButton> buttons;
     private CustomLabel[][] fields;
     private JFrame gameFrame;
     private JLabel serverLabel;
     private JLabel clientLabel;
-    
+    private JButton exitButton;
+    private int updateCounter;
+
     /**
      * Creates an instance of the GameView.
      * @param listener for listening of the events
-     * @param boardWidth
-     * @param boardHeight
+     * @param boardWidth the width of the GameBoard
+     * @param boardHeight the height of the GameBoard
      */
     public GameView(final ActionListener listener, final int boardWidth, final int boardHeight) {
-        xsize = boardWidth;
-        ysize = boardHeight;
+        int xsize = boardWidth;
+        int ysize = boardHeight;
         gameFrame = new JFrame("Vier gewinnt");
         Container contentPane = gameFrame.getContentPane();
         JPanel gameGrid = new JPanel();
@@ -83,7 +83,7 @@ public class GameView implements ButtonFinder{
         clientLabel.setOpaque(true);
         clientLabel.setBackground(new Color(255, 255, 0, 40));
         
-        JButton exitButton = new JButton("exit");
+        exitButton = new JButton("exit");
         JPanel exitPane = new JPanel();
         exitPane.add(exitButton);
         exitButton.addActionListener(listener);
@@ -107,17 +107,18 @@ public class GameView implements ButtonFinder{
      * Updates the Gamboard with the token and the marking for the current player.
      * @param row the row of the placed token
      * @param column the column of the placed token
-     * @param color the color of the placed token (only use Color.RED or Color.YELLOW)
+     * @param color the color of the placed token (only use Color.red or Color.yellow)
      */
     public void updateGameBoard(int row, int column, Color color) {
         fields[row][column-1].updateColor(color);
-        if(color == Color.YELLOW || color == Color.yellow) {
+        if((updateCounter % 2) == 1) {
             serverLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.red));
             clientLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.yellow));
-        } else if (color == Color.RED || color == Color.red) {
+        } else {
             clientLabel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.yellow));
             serverLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.red));
         }
+        updateCounter++;
     }
     
     public JFrame getGameFrame(){
@@ -126,7 +127,7 @@ public class GameView implements ButtonFinder{
 
     @Override
     public boolean ownsButton(JButton button) {
-        return buttons.contains(button);
+        return (buttons.contains(button) || button.equals(exitButton));
     }
     
     public void setVisible(final boolean modVis){
