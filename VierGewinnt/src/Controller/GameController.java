@@ -122,7 +122,6 @@ public class GameController implements ActionListener{
             if (actionCommand.matches("button[0-9]+")){
                 int column = Integer.parseInt(actionCommand.substring(6)) + 1;
                 if (ourMove){
-                    System.out.println("Make a move in " + column);
                     processMoves(column);
                 }
             }
