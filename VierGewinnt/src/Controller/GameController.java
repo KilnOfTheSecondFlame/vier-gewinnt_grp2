@@ -7,6 +7,7 @@
 * ------------------------------------------------------------------------------------------------------------------
 * R. Scheller       01.12.2016  RS20161201_01   Created the class and implemented its methods.  
 * P. Baumann        15.12.2016  PB20161215_01   Changed the MouseListeners to ActionListeners; Implemented the handling of the ActionEvents
+* M. Beck           16.12.2016  MB20161216_01   few changes
 */
 
 package Controller;
@@ -33,7 +34,7 @@ import static javax.swing.JOptionPane.PLAIN_MESSAGE;
 public class GameController implements ActionListener{
     private final int GAMEBOARDWIDTH = 10;
     private final int GAMEBOARDHEIGHT = 10;
-    private final Color[] COLORS = {Color.RED, Color.BLACK};
+    private final Color[] COLORS = {Color.RED, Color.YELLOW};
     
     private Color currentColor = COLORS[0];
     private Player currentPlayer;
@@ -56,7 +57,7 @@ public class GameController implements ActionListener{
         mainMenu = new MainMenu(this);
         gameBoard = new GameBoard(GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
-        lobby = new Lobby();
+        lobby = new Lobby(this);
         //gameView.setVisible(false);
         
         EventQueue.invokeLater(new Runnable(){
