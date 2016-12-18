@@ -200,13 +200,11 @@ public class GameController implements ActionListener, Runnable {
                 // TODO - Option for a rematch
                 JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
             }
-
+            
             ourMove = !ourMove;
             new Thread(new Runnable() {
                 @Override
                 public synchronized void run() {
-                    // Set ourMove to false to stop accepting new column input
-                    ourMove = !ourMove;
                     try {
                         int move = connectivityController.receiveMove();
                         processMoves(move);
