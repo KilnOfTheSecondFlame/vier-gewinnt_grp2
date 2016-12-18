@@ -215,9 +215,11 @@ public class GameController implements ActionListener, Runnable {
                 currentPlayer = self;
             }
 
-            if (gameBoard.isGameWon()) {
-                // TODO - Option for a rematch
+            if (gameBoard.isGameWon() && currentPlayer.equals(self)) {
                 JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
+            }
+            else{
+                JOptionPane.showMessageDialog(gameView.getGameFrame(), "Oh bummer. You have lost this round!", "Woohoo", PLAIN_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(gameView.getGameFrame(), "Column is full!\n Please choose another column", "Illegal!", PLAIN_MESSAGE);
