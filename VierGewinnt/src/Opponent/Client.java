@@ -177,12 +177,6 @@ public class Client implements Runnable{
             }
             while (isReceiving){
                 searchGames(announcementSocket);
-                
-                // TODO remove before shipping
-//               System.out.println("List of servers:");
-                servers.keySet().forEach((server) -> {
-//                    System.out.println(server + " " + servers.get(server));
-                });
             }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);

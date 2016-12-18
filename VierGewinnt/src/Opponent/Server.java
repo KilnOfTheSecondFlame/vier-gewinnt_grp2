@@ -98,9 +98,6 @@ public class Server implements Runnable{
      * @throws java.io.IOException
      */
     public void openConnection() throws IOException{
-        // TODO Remove console messages
-        System.out.println("Trying to open socket on port " + port);
-        
         ServerSocket serverSocket = new ServerSocket(port);
         
         // Starts the Announcement Thread
@@ -123,10 +120,7 @@ public class Server implements Runnable{
      * @throws java.io.IOException
      */
     private void announceGame(final DatagramSocket announceSocket) throws IOException{
-        byte[] sendData;        
-        /* TODO Review whats sent to the clients - also centralise this?
-                Because a change here makes it necessary to change the handling in Opponent.Client
-        */
+        byte[] sendData;     
         String dataPayload = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName())[1].toString() + "/" + this.playerName + " " + this.port;
         // We have to provide the multicast address FF02::FC (All Nodes link local) in byte sequence
         InetAddress multicastGroup = InetAddress.getByName("FF02::FC");
