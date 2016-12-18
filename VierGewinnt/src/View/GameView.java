@@ -99,6 +99,7 @@ public class GameView implements ButtonFinder{
         // contentPane.add(scoreTable, BorderLayout.SOUTH);
         gameGrid.setLayout(new GridLayout(ysize + 1, xsize + 1));
         
+        gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         gameFrame.setSize(600, 700);
     }
     
@@ -118,6 +119,14 @@ public class GameView implements ButtonFinder{
             serverLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.red));
         }
         updateCounter++;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
     
     public JFrame getGameFrame(){
