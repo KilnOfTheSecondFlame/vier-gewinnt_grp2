@@ -47,8 +47,11 @@ public class MainMenu implements ButtonFinder{
         
         mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainMenuFrame.setResizable(false);
-        mainMenuFrame.setSize(200, 120);
+        mainMenuFrame.setSize(300, 120);
         mainMenuFrame.setVisible(true);
+        
+        mainMenuFrame.setTitle("Main Menu");
+        mainMenuFrame.setLocationRelativeTo(null);
     }
     
     public void setVisible(final boolean modVis){

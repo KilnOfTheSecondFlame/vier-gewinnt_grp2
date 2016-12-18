@@ -101,6 +101,9 @@ public class GameView implements ButtonFinder{
         
         gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         gameFrame.setSize(600, 700);
+        
+        gameFrame.setTitle("Connect Four");
+        gameFrame.setLocationRelativeTo(null);
     }
     
      /**

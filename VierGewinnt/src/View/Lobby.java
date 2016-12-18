@@ -54,8 +54,11 @@ public class Lobby extends JFrame implements ButtonFinder{ // Extended from JFra
         
         lobbyFrame.add(listScrollPane, BorderLayout.CENTER);
         lobbyFrame.add(buttonPane, BorderLayout.PAGE_END);
-        lobbyFrame.setSize(200, 200);
+        lobbyFrame.setSize(500, 500);
         lobbyFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        lobbyFrame.setTitle("Lobby");
+        lobbyFrame.setLocationRelativeTo(null);
     }
     
     public ArrayList<String> getGameListArray(){
@@ -78,7 +81,7 @@ public class Lobby extends JFrame implements ButtonFinder{ // Extended from JFra
     
     // Signature: RS20161216_01
     @Override
-    public void repaint(){
+    public void paint(Graphics g){
         listModel.clear();
         
         for(String s:gameListArray){
