@@ -28,12 +28,12 @@ public class GameView implements ButtonFinder{
     private String clientName;
     // private int serverScore;
     // private int clientScore;
-    private ArrayList<JButton> buttons;
-    private CustomLabel[][] fields;
-    private JFrame gameFrame;
-    private JLabel serverLabel;
-    private JLabel clientLabel;
-    private JButton exitButton;
+    private final ArrayList<JButton> buttons;
+    private final CustomLabel[][] fields;
+    private final JFrame gameFrame;
+    private final JLabel serverLabel;
+    private final JLabel clientLabel;
+    private final JButton exitButton;
     private int updateCounter;
 
     /**

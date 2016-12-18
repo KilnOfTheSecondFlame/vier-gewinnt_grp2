@@ -17,7 +17,7 @@ import java.awt.Color;
  * @author Rico Scheller
  */
 public class Token {
-   private Color color;
+   private final Color color;
    
    /**
     * Creates an instance of the token.

@@ -35,13 +35,13 @@ import java.util.logging.Logger;
  */
 public class Server implements Runnable{
     // Attributes
-    private int port;
+    private final int port;
     private boolean notConnected = true;
     private boolean isConnected = false;    // Since notConnected is used in stopServer(), we can't use it to test if someone has connected. Signature: RS20161210_01
     private Socket clientSocket;
     private BufferedReader inFromClient;
     private DataOutputStream outToClient;
-    private String playerName;
+    private final String playerName;
         
     // Constants
     private final int ANNOUNCE_WAIT = 5000;

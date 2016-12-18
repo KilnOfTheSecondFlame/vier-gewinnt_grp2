@@ -20,10 +20,10 @@ import javax.swing.*;
  * @author Melissa Beck
  */
 public class MainMenu implements ButtonFinder{
-    private JLabel enterNameLabel;
-    private JTextField userName;
-    private JButton multiplayerButton;
-    private JFrame mainMenuFrame;
+    private final JLabel enterNameLabel;
+    private final JTextField userName;
+    private final JButton multiplayerButton;
+    private final JFrame mainMenuFrame;
 
     /**
     * Creates an instance of the MainMenu.

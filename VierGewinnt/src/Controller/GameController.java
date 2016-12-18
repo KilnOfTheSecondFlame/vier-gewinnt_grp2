@@ -38,15 +38,14 @@ public class GameController implements ActionListener, Runnable {
 
     private Color currentColor = COLORS[0];
     private Player currentPlayer;
-    private boolean ourMove = true;
     private boolean isConnected = false;
     private Thread connectThread;
 
     private MainMenu mainMenu;
-    private Lobby lobby;
+    private final Lobby lobby;
     private GameView gameView;
     private Player self, opponent;
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
     private ConnectivityController connectivityController;
 
     // START THE GAME

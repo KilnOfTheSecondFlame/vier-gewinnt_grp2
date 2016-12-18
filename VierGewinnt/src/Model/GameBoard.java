@@ -20,7 +20,7 @@ import java.awt.Color;
  * @author Rico Scheller
  */
 public class GameBoard {
-    private Token[][] grid;             // Structure:   0 1 2 .. CONSTWIDTH-1
+    private final Token[][] grid;             // Structure:   0 1 2 .. CONSTWIDTH-1
                                         //              1
                                         //              2
                                         //              ..

@@ -68,8 +68,7 @@ public class ConnectivityController{
                         } catch (IOException ex) {
                             Logger.getLogger(ConnectivityController.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    }
-                    
+                    }  
                 }
             }
         };

@@ -15,7 +15,7 @@ package Model;
  * @author Rico Scheller
  */
 public class Player {
-    private String name;
+    private final String name;
     private int score;
     
     /**

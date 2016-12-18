@@ -25,10 +25,10 @@ import java.util.ArrayList;
  * @author Melissa Beck
  */
 public class Lobby extends JFrame implements ButtonFinder{ // Extended from JFrame. Signatur: RS20161209_01
-    private JList<String> gameList;
-    private ArrayList<String> gameListArray;    // Included Generics. Signatur: RS20161209_01
-    private JButton exitButton;
-    private JFrame lobbyFrame;
+    private final JList<String> gameList;
+    private final ArrayList<String> gameListArray;    // Included Generics. Signatur: RS20161209_01
+    private final JButton exitButton;
+    private final JFrame lobbyFrame;
     DefaultListModel<String> listModel;         // Signature: RS20161216_01
     
     /**
