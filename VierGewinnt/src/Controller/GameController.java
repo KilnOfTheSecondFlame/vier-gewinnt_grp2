@@ -62,6 +62,7 @@ public class GameController implements ActionListener, Runnable {
         gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         lobby = new Lobby(this);
         gameView.setVisible(false);
+        currentPlayer = self;
 
         EventQueue.invokeLater(() -> {
             mainMenu.setVisible(true);
@@ -111,22 +112,17 @@ public class GameController implements ActionListener, Runnable {
                             Thread.sleep(250);
                         }
                         if (isConnected) {
-                            ourMove = connectivityController.isClient();
+                            if (connectivityController.isClient()) currentPlayer = opponent;
                             lobby.setVisible(false);
                             gameView.setVisible(true);
                         }
-                        if (!ourMove) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public synchronized void run() {
-                                    try {
-                                        int move = connectivityController.receiveMove();
-                                        processMoves(move);
-                                        // Free the buttonHandling of gameView again
-                                        ourMove = !ourMove;
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
+                        if (currentPlayer == opponent) {
+                            new Thread(() -> {
+                                try {
+                                    int move = connectivityController.receiveMove();
+                                    processMoves(move);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }).start();
                         }
@@ -161,8 +157,10 @@ public class GameController implements ActionListener, Runnable {
             String actionCommand = e.getActionCommand();
             if (actionCommand.matches("button[0-9]+")) {
                 int column = Integer.parseInt(actionCommand.substring(6)) + 1;
-                if (ourMove & isConnected) {
+                
+                if (currentPlayer == self & isConnected) {
                     processMoves(column);
+                    
                     new Thread(new Runnable() {
                         @Override
                         public synchronized void run() {
@@ -211,7 +209,6 @@ public class GameController implements ActionListener, Runnable {
                 // TODO - Option for a rematch
                 JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
             }
-            ourMove = !ourMove;
         } else {
             JOptionPane.showMessageDialog(gameView.getGameFrame(), "Column is full!\n Please choose another column", "Illegal!", PLAIN_MESSAGE);
         }
