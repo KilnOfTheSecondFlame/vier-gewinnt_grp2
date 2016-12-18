@@ -8,6 +8,7 @@
 * R. Scheller       09.12.2016  RS20161209_01   Created the class and implemented its methods. 
 * R. Scheller       15.12.2016  RS20161215_01   Added some changes.
 * R. Scheller       16.12.2016  RS20161216_01   Added interactivity with the lobby.
+* R. Scheller       18.12.2016  RS20161218_01   Added some changes.
 */
 
 package Controller;
@@ -105,7 +106,8 @@ public class ConnectivityController{
                 
                 if(server != null){
                    // Someone connected to us thus we are the server.
-                    client = null; 
+                   client.stopClient();     // Stop the client thread. Signature: RS20161218_01
+                   client = null; 
 //                    opponentName = server.getOpponentName();
                     connected = true;
                 }
@@ -128,6 +130,7 @@ public class ConnectivityController{
             
             // We connected to someone thus we are the client.
             client.stopClient();        // Stop the client thread. Signature: RS20161215_01
+            server.stopServer();        // Stop the server thread. Signature: RS20161218_01
             server = null;
             
             isClient = true;
