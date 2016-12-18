@@ -28,7 +28,7 @@ import javax.swing.JList;
  * Represents the controller which handles the connections between the players.
  * @author Rico Scheller
  */
-public class ConnectivityController {
+public class ConnectivityController{
     private Client client;
     private Server server;
     private final Lobby lobby;

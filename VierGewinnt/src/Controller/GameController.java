@@ -31,7 +31,7 @@ import static javax.swing.JOptionPane.PLAIN_MESSAGE;
  *
  * @author Rico Scheller
  */
-public class GameController implements ActionListener{
+public class GameController implements ActionListener, Runnable{
     private final int GAMEBOARDWIDTH = 10;
     private final int GAMEBOARDHEIGHT = 10;
     private final Color[] COLORS = {Color.RED, Color.YELLOW};
@@ -39,6 +39,8 @@ public class GameController implements ActionListener{
     private Color currentColor = COLORS[0];
     private Player currentPlayer;
     private boolean ourMove = true;
+    private boolean isConnected = false;
+    private Thread connectThread;
     
     private MainMenu mainMenu;
     private Lobby lobby;
@@ -50,6 +52,7 @@ public class GameController implements ActionListener{
     // START THE GAME
     public static void main(String[] args) {
         GameController gameController = new GameController();
+        new Thread(gameController).start();
     }
     
     // Constructor
@@ -58,14 +61,15 @@ public class GameController implements ActionListener{
         gameBoard = new GameBoard(GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         lobby = new Lobby(this);
-        //gameView.setVisible(false);
+        gameView.setVisible(false);
         
-        EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run(){
-                mainMenu.setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            mainMenu.setVisible(true);
         });
+    }
+    
+    @Override
+    public void run() {
     }
     
     // ACTION LISTENER
@@ -91,19 +95,27 @@ public class GameController implements ActionListener{
                 connectivityController = new ConnectivityController(lobby, name);
                 connectivityController.searchAndAnnounce();
                 
-                boolean isConnected = false;
-                while (!isConnected){
-                    try {
-                        //isConnected = connectivityController.getConnected();
-                        this.wait(500);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                connectThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            getConnected();
+                        } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
-                }
+
+                    private synchronized void getConnected() throws InterruptedException {
+                        while (!isConnected){
+                            isConnected = connectivityController.isConnected();
+                            Thread.sleep(250);
+                        }
+                    }
+                });
+                connectThread.start();
             }
         }
         
-        /*
         if (lobby.ownsButton(sourceButton)){
             if (e.getActionCommand().equals("exit")){
                 
@@ -113,18 +125,29 @@ public class GameController implements ActionListener{
                 mainMenu.setVisible(true);
                 
                 // Delete the reference to the connectivityController
+                connectThread.interrupt();
+                try {
+                    connectThread.join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    Thread.currentThread().interrupt();
+                    return;
+                }
                 connectivityController = null;
             }
         }
-        */
         
         if (gameView.ownsButton(sourceButton)){
             String actionCommand = e.getActionCommand();
             if (actionCommand.matches("button[0-9]+")){
                 int column = Integer.parseInt(actionCommand.substring(6)) + 1;
-                if (ourMove){
+                if (ourMove & isConnected){
                     processMoves(column);
                 }
+            }
+            if (actionCommand.equals("exit")){
+                gameView.setVisible(false);
+                gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
             }
         }
     }

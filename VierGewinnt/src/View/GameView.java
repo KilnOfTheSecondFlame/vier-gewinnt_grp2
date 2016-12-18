@@ -100,7 +100,6 @@ public class GameView implements ButtonFinder{
         gameGrid.setLayout(new GridLayout(ysize + 1, xsize + 1));
         
         gameFrame.setSize(600, 700);
-        gameFrame.setVisible(true);
     }
     
      /**
