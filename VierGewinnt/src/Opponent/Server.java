@@ -88,9 +88,6 @@ public class Server implements Runnable{
     public void run() {
         try {
             openConnection();
-            
-            // TODO Remove - debug
-            System.out.println(sendMove(2));
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
