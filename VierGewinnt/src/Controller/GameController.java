@@ -91,6 +91,7 @@ public class GameController implements ActionListener, Runnable {
                 if (name.equals("")) {
                     name = "Player" + (int) Math.floor(Math.random() * 100000);
                 }
+                self = new Player(name);
 
                 // Create the connectivityController
                 connectivityController = new ConnectivityController(lobby, name);
@@ -112,11 +113,18 @@ public class GameController implements ActionListener, Runnable {
                             Thread.sleep(250);
                         }
                         if (isConnected) {
+                            opponent = new Player("Gegner");
                             if (connectivityController.isClient()) currentPlayer = opponent;
+                            if (connectivityController.isClient()){
+                                gameView.setPlayerNames(opponent.getName(), self.getName());
+                            }
+                            else {
+                                gameView.setPlayerNames(self.getName(),opponent.getName());
+                            }
                             lobby.setVisible(false);
                             gameView.setVisible(true);
                         }
-                        if (currentPlayer == opponent) {
+                        if (currentPlayer.equals(opponent)) {
                             new Thread(() -> {
                                 try {
                                     int move = connectivityController.receiveMove();
