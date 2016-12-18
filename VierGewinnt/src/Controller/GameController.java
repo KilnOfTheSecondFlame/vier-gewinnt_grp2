@@ -216,10 +216,10 @@ public class GameController implements ActionListener, Runnable {
 
             if (gameBoard.isGameWon()) {
                 if(currentPlayer.equals(self)){
-                    JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(gameView.getGameFrame(), "Oh bummer. You have lost this round!", "Woohoo", PLAIN_MESSAGE);
                 }
                 else{
-                    JOptionPane.showMessageDialog(gameView.getGameFrame(), "Oh bummer. You have lost this round!", "Woohoo", PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
                 }
             }
         } else {
