@@ -121,13 +121,11 @@ public class GameView implements ButtonFinder{
         updateCounter++;
     }
 
-    public void setServerName(String serverName) {
-        this.serverName = serverName;
+    public void setPlayerNames(String firstName, String lastName) {
+        this.serverName = firstName;
+        this.clientName = lastName;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
     
     public JFrame getGameFrame(){
         return this.gameFrame;
