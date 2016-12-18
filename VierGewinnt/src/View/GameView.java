@@ -87,7 +87,7 @@ public class GameView implements ButtonFinder{
         JPanel exitPane = new JPanel();
         exitPane.add(exitButton);
         exitButton.addActionListener(listener);
-        exitButton.setActionCommand("exitbutton");
+        exitButton.setActionCommand("exit");
 
         northPanel.add(serverLabel);
         northPanel.add(lineLabel);

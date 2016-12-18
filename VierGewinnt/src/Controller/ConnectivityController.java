@@ -37,6 +37,7 @@ public class ConnectivityController{
     private Thread waitForConnect;
     private boolean connected;          // Signature: RS20161216_01
     private String opponentName;        // Signature: RS20161216_01
+    private boolean isClient;
     private final MouseAdapter mouseAdapter;  // Signature: RS20161216_01
     
     /**
@@ -51,6 +52,7 @@ public class ConnectivityController{
         clientThread = new Thread(client);
         serverThread = new Thread(server);
         connected = false;     // Signature: RS20161216_01
+        isClient = false;       // Signature: PB20161218_01
         
         mouseAdapter = new MouseAdapter() {
             @Override
@@ -66,6 +68,7 @@ public class ConnectivityController{
                             Logger.getLogger(ConnectivityController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
                 }
             }
         };
@@ -127,6 +130,7 @@ public class ConnectivityController{
             client.stopClient();        // Stop the client thread. Signature: RS20161215_01
             server = null;
             
+            isClient = true;
             opponentName = nameAndPort[0];
             connected = true;
         }
@@ -178,5 +182,13 @@ public class ConnectivityController{
      */
     public String getOpponentName(){
         return opponentName;
+    }
+    
+    /**
+     * Checks if we are the client or the server
+     * @return true if we are the client
+     */
+    public boolean isClient(){
+        return isClient;
     }
 }
