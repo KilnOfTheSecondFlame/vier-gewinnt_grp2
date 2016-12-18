@@ -105,7 +105,7 @@ public class GameController implements ActionListener, Runnable {
                         }
                     }
 
-                    private synchronized void getConnected() throws InterruptedException {
+                    private void getConnected() throws InterruptedException {
                         while (!isConnected) {
                             isConnected = connectivityController.isConnected();
                             Thread.sleep(250);
