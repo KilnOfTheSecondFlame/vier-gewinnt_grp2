@@ -163,6 +163,17 @@ public class GameController implements ActionListener, Runnable {
                 int column = Integer.parseInt(actionCommand.substring(6)) + 1;
                 if (ourMove & isConnected) {
                     processMoves(column);
+                    new Thread(new Runnable() {
+                        @Override
+                        public synchronized void run() {
+                            try {
+                                int move = connectivityController.receiveMove();
+                                processMoves(move);
+                            } catch (IOException ex) {
+                                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }).start();
                 }
             }
             if (actionCommand.equals("exit")) {
@@ -200,23 +211,10 @@ public class GameController implements ActionListener, Runnable {
                 // TODO - Option for a rematch
                 JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
             }
-            
             ourMove = !ourMove;
-            new Thread(new Runnable() {
-                @Override
-                public synchronized void run() {
-                    try {
-                        int move = connectivityController.receiveMove();
-                        processMoves(move);
-                        // Free the buttonHandling of gameView again
-                        ourMove = !ourMove;
-                    } catch (IOException ex) {
-                        Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }).start();
         } else {
             JOptionPane.showMessageDialog(gameView.getGameFrame(), "Column is full!\n Please choose another column", "Illegal!", PLAIN_MESSAGE);
         }
     }
+
 }
