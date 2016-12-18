@@ -81,7 +81,7 @@ public class Lobby extends JFrame implements ButtonFinder{ // Extended from JFra
     
     // Signature: RS20161216_01
     @Override
-    public void paint(Graphics g){
+    public void repaint(){
         listModel.clear();
         
         for(String s:gameListArray){
