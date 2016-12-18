@@ -195,10 +195,12 @@ public class GameController implements ActionListener, Runnable {
         int row = gameBoard.addToken(column - 1, new Token(currentColor));
         if (row >= 0) {
             gameView.updateGameBoard(row, column, currentColor);
-            try {
-                connectivityController.sendMove(column);
-            } catch (IOException ex) {
-                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+            if (currentPlayer.equals(self)){
+                try {
+                    connectivityController.sendMove(column);
+                } catch (IOException ex) {
+                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             if (currentColor == COLORS[0]) {
