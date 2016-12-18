@@ -124,6 +124,8 @@ public class GameView implements ButtonFinder{
     public void setPlayerNames(String firstName, String lastName) {
         this.serverName = firstName;
         this.clientName = lastName;
+        serverLabel.setText(serverName);
+        clientLabel.setText(clientName);
     }
 
     

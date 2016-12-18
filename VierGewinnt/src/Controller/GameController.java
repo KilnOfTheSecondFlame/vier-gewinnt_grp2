@@ -62,7 +62,6 @@ public class GameController implements ActionListener, Runnable {
         gameView = new GameView(this, GAMEBOARDWIDTH, GAMEBOARDHEIGHT);
         lobby = new Lobby(this);
         gameView.setVisible(false);
-        currentPlayer = self;
 
         EventQueue.invokeLater(() -> {
             mainMenu.setVisible(true);
@@ -115,6 +114,7 @@ public class GameController implements ActionListener, Runnable {
                         if (isConnected) {
                             opponent = new Player("Gegner");
                             if (connectivityController.isClient()) currentPlayer = opponent;
+                            else currentPlayer = self;
                             if (connectivityController.isClient()){
                                 gameView.setPlayerNames(opponent.getName(), self.getName());
                             }
