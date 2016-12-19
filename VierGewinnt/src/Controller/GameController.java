@@ -166,19 +166,19 @@ public class GameController implements ActionListener, Runnable {
                 int column = Integer.parseInt(actionCommand.substring(6)) + 1;
                 
                 if (currentPlayer == self & isConnected) {
-                    processMoves(column);
-                    
-                    new Thread(new Runnable() {
-                        @Override
-                        public synchronized void run() {
-                            try {
-                                int move = connectivityController.receiveMove();
-                                processMoves(move);
-                            } catch (IOException ex) {
-                                Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                    if(processMoves(column)){
+                        new Thread(new Runnable() {
+                            @Override
+                            public synchronized void run() {
+                                try {
+                                    int move = connectivityController.receiveMove();
+                                    processMoves(move);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
             }
             if (actionCommand.equals("exit")) {
@@ -190,7 +190,7 @@ public class GameController implements ActionListener, Runnable {
     }
 
     // TASKS TO DO WHILE RUNNING
-    private void processMoves(final int column) {
+    private boolean processMoves(final int column) {
         int row = gameBoard.addToken(column - 1, new Token(currentColor));
         if (row >= 0) {
             gameView.updateGameBoard(row, column, currentColor);
@@ -221,10 +221,14 @@ public class GameController implements ActionListener, Runnable {
                 else{
                     JOptionPane.showMessageDialog(gameView.getGameFrame(), "Congratulations. You have won this round!", "Woohoo", PLAIN_MESSAGE);
                 }
+                return false;
             }
         } else {
             JOptionPane.showMessageDialog(gameView.getGameFrame(), "Column is full!\n Please choose another column", "Illegal!", PLAIN_MESSAGE);
+            return false;
         }
+        
+        return true;
     }
 
 }
